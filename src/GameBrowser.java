@@ -8,13 +8,14 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.plaf.metal.*;
-import java.io.*;
-import javax.swing.filechooser.*;
-import javax.swing.text.*;
+//import javax.swing.plaf.metal.*;
+//import java.io.*;
+//import javax.swing.filechooser.*;
+//import javax.swing.text.*;
 import java.sql.*;
 import java.util.*;
 import java.text.*;
+import javax.swing.border.*;
 
 import org.jdesktop.swingx.*;
 
@@ -34,13 +35,13 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		System.out.println("GameBrowser Class initiated");
 		
 		/***Configure layout***/		
-		getMultiSplitLayout().setModel(MultiSplitLayout.parseModel("(ROW (LEAF name=sidebar weight=0.25) (COLUMN weight=0.75 (ROW weight=0.75 (LEAF name=pic weight=0.25) (LEAF name=desc weight=0.75)) (LEAF name=download weight=0.25)))))"));
+		getMultiSplitLayout().setModel(MultiSplitLayout.parseModel("(ROW (LEAF name=sidebar weight=0.25) (COLUMN weight=0.75 (ROW weight=0.6 (LEAF name=pic weight=0.25) (LEAF name=desc weight=0.75)) (LEAF name=download weight=0.4)))))"));
 		add(buildTreeMenu(),"sidebar");
 		add(picPanel = new JPanel(),"pic");
 		add(descPanel = new JPanel(),"desc");
 		add(new JButton("download"),"download");
 		
-		picPanel.setLayout(new GridLayout(1,1));
+		picPanel.setLayout(new BoxLayout(picPanel,BoxLayout.Y_AXIS));
 		picPanel.add(new JLabel("Please Select a Game",JLabel.CENTER));
 		descPanel.setLayout(new BoxLayout(descPanel,BoxLayout.Y_AXIS));
 		return this;
@@ -120,22 +121,29 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		      	descPane.setEditable(false);
 		      	descPane.setBorder(null); 
 		      	descPane.setLineWrap(true);
+		      	descPane.setWrapStyleWord(true);
+		      	descPane.setBackground(this.getBackground());
+		      	descPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		      	descPanel.add(descPane);
 		      	
 		      	//setup image
 		      	picPanel.removeAll();
 		      	JLabel gamePic = new JLabel("",JLabel.CENTER);
 		      	Path picPath = gameDir.resolve(rs.getString("picture"));
+		      	ImageIcon gamePicIcon;
 				if(picPath.exists()!=true) {
 			    	System.out.println("Game provided image not avalible");
-			    	gamePic.setIcon(new ImageIcon("noImage.jpg"));
+			    	gamePicIcon = new ImageIcon("noImage.jpg");
 			    }
 			    else {
-			    	gamePic.setIcon(new ImageIcon(picPath.toString()));
+			    	gamePicIcon = new ImageIcon(picPath.toString());
 			    }
+			    //overcomplicated way to resize
+			    gamePic.setIcon(new ImageIcon(gamePicIcon.getImage().getScaledInstance(300, -1,  Image.SCALE_SMOOTH)));  
 			    picPanel.add(gamePic);
-			    System.out.println(Calendar.getInstance().getTimeInMillis());
-			    System.out.println("Date Added: " + DateFormat.getDateInstance(DateFormat.FULL).format((int)rs.getString("addDate")));
+			    //add dates
+			    picPanel.add(new JLabel("<HTML><b>Date Added:</b> " + DateFormat.getDateInstance(DateFormat.FULL).format(Long.valueOf(rs.getString("addDate").trim())) + "</HTML>"));
+			    picPanel.add(new JLabel("<HTML><b>Date Game Created:</b> " + DateFormat.getDateInstance(DateFormat.FULL).format(Long.valueOf(rs.getString("createDate").trim())) + "</HTML>"));
 			}
         	catch(Exception ex) {
       			System.out.println("Error message: " + ex.toString());

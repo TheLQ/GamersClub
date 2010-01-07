@@ -1,0 +1,5 @@
+"C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\GameBrowser.java"
+"C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\GamersClub.java"
+"C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\Globs.java"
+"C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\MainMenu.java"
+"C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\PeopleBrowser.java"
