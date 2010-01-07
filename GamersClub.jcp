@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<settings>
+		<label>GamersClub</label>
+		<root_path>\</root_path>
+		<output_path>classes\</output_path>
+		<source_path>src\</source_path>
+		<jdkprofile_ref>JDK version 1.7.0</jdkprofile_ref>
+		<compiler_ref>&lt;Default&gt;</compiler_ref>
+		<ant_ref/>
+	</settings>
+	<ant_events/>
+	<run_items>
+		<item run="GamersClub"/>
+	</run_items>
+	<runtimes>
+		<runtime>
+			<label>&lt;Default&gt;</label>
+			<application_ref>&lt;Default&gt;</application_ref>
+			<applet_ref>&lt;Default&gt;</applet_ref>
+			<debugger_ref>&lt;Default&gt;</debugger_ref>
+			<param/>
+			<run>GamersClub</run>
+			<verify>true</verify>
+		</runtime>
+	</runtimes>
+	<libraries/>
+	<files>
+		<include>
+			<folderitem>
+				<path>src</path>
+			</folderitem>
+			<fileitem>
+				<path>mysql-connector-java-5.1.10-bin.jar</path>
+			</fileitem>
+			<fileitem>
+				<path>swingx-1.6.jar</path>
+			</fileitem>
+			<fileitem>
+				<path>src\build.xml</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\GameBrowser.java</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\GamersClub.java</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\Globs.java</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\MainMenu.java</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\PeopleBrowser.java</path>
+				<folder>src</folder>
+			</fileitem>
+		</include>
+		<exclude>
+			<folderitem>
+				<path>components</path>
+				<dir/>
+			</folderitem>
+		</exclude>
+	</files>
+	<tasks/>
+</project>

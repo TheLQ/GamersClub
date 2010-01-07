@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<workspace>
+	<settings>
+		<label>GamersClub</label>
+	</settings>
+	<users>
+		<user>
+			<path>GamersClub.jcu</path>
+		</user>
+	</users>
+	<projects>
+		<project>
+			<path>GamersClub.jcp</path>
+		</project>
+	</projects>
+</workspace>

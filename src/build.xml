@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="GamersClub" default="compile" basedir=".">
+	<description>
+		Builds the Gamers Club Distrbution Service
+	</description>
+	<!-- set global properties for this build -->
+	<property name="src" location="src"/>
+	<property name="build" location="classes"/>
+	<property name="dist"  location="."/>
+	<property name="name"  location="GamersClub"/>
+	
+	<target name="compile" description="Compile the source code" >
+		<echo message="Compiling Source code"/>
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}"/>
+		<!-- Build the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}"/>
+	</target>
+
+	<target name="deploy" depends="compile"
+		description="generate the distribution" >
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}/lib"/>
+		<!-- Put everything in ${build} into the ${name}.jar file -->
+		<jar jarfile="${dist}/lib/${name}.jar" basedir="${build}"/>
+	</target>
+
+	<target name="clean"
+			description="clean up" >
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+</project>
