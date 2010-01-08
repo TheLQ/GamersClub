@@ -8,10 +8,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-//import javax.swing.plaf.metal.*;
-//import java.io.*;
-//import javax.swing.filechooser.*;
-//import javax.swing.text.*;
 import java.sql.*;
 import java.util.*;
 import java.text.*;
@@ -26,9 +22,10 @@ import javax.swing.event.TreeSelectionListener;
 
 import java.nio.file.*;
 public class GameBrowser extends JXMultiSplitPane implements ActionListener,TreeSelectionListener{
-	JPanel picPanel, descPanel;
+	JPanel picPanel, descPanel,downPanel;
 	Path gameDir;
 	boolean valueChangedRunning = false;
+	int valueHash;
 	
 	/*Returns a completed JPanel for master class*/
 	public JXMultiSplitPane generate() {
@@ -39,15 +36,17 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		add(buildTreeMenu(),"sidebar");
 		add(picPanel = new JPanel(),"pic");
 		add(descPanel = new JPanel(),"desc");
-		add(new JButton("download"),"download");
+		add(downPanel = new JPanel(),"download");
+		picPanel.add(new JLabel("Please Select a Game",JLabel.CENTER));
 		
 		picPanel.setLayout(new BoxLayout(picPanel,BoxLayout.Y_AXIS));
-		picPanel.add(new JLabel("Please Select a Game",JLabel.CENTER));
 		descPanel.setLayout(new BoxLayout(descPanel,BoxLayout.Y_AXIS));
+		downPanel.setLayout(new BoxLayout(downPanel,BoxLayout.Y_AXIS));	
+		
 		return this;
 	}
 	
-	private JScrollPane buildTreeMenu() {
+	private JPanel buildTreeMenu() {
         //Create the nodes.
         DefaultMutableTreeNode top = new DefaultMutableTreeNode("Game Broser");
 		
@@ -59,7 +58,15 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
         //Listen for when the selection changes.
         tree.addTreeSelectionListener(this);
         
+        /***Configure Pane***/
         JScrollPane treeView = new JScrollPane(tree);
+        JPanel treePanel = new JPanel();
+        treePanel.setLayout(new BoxLayout(treePanel,BoxLayout.Y_AXIS));
+        treePanel.add(treeView);
+        JButton addGame = new JButton ("Add Game");
+        addGame.addActionListener(this);
+        treePanel.add(addGame);
+        
         
         /***Start adding nodes***/
         DefaultMutableTreeNode category = null;
@@ -81,18 +88,24 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		catch(Exception e) {
       		System.out.println("Error message: " + e.toString());
       	}
-		return treeView;
+      	
+      	
+		return treePanel;
     }
     
     /** Required by TreeSelectionListener interface. */
     public void valueChanged(TreeSelectionEvent e) {
     	DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
+    	int currentHash = e.hashCode();
     	
-    	if(valueChangedRunning == true) 
+    	if(valueHash == currentHash) {
+    		System.out.println("ValueHash: Already running, exit");
     		return; //already running
-    	else
-    		valueChangedRunning = true;
-    	
+    	}
+    	else {
+    		System.out.println("ValueHash: Not running. Setting var as true and continuing");
+    		valueHash=currentHash;
+    	}
     	
     	//is anything selected?
     	if (node == null)
@@ -114,7 +127,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		      		System.exit(0);
 		      	}
         		
-        		//Setup desccription pane
+        		/***Setup desccription pane***/
         		descPanel.removeAll();
         		String desc = rs.getString("desc");
 		    	JTextArea descPane = new JTextArea(desc);
@@ -126,7 +139,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		      	descPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		      	descPanel.add(descPane);
 		      	
-		      	//setup image
+		      	/***Setup Picture Pane***/
 		      	picPanel.removeAll();
 		      	JLabel gamePic = new JLabel("",JLabel.CENTER);
 		      	Path picPath = gameDir.resolve(rs.getString("picture"));
@@ -144,6 +157,9 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 			    //add dates
 			    picPanel.add(new JLabel("<HTML><b>Date Added:</b> " + DateFormat.getDateInstance(DateFormat.FULL).format(Long.valueOf(rs.getString("addDate").trim())) + "</HTML>"));
 			    picPanel.add(new JLabel("<HTML><b>Date Game Created:</b> " + DateFormat.getDateInstance(DateFormat.FULL).format(Long.valueOf(rs.getString("createDate").trim())) + "</HTML>"));
+			
+				/***Setup Download Pane***/
+				
 			}
         	catch(Exception ex) {
       			System.out.println("Error message: " + ex.toString());
@@ -154,9 +170,15 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
     	}
     	repaint();
 		revalidate();
-		valueChangedRunning = false;
+		System.out.println("Running");
+		this.valueChangedRunning = false;
     }
 	
 	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		
+		if(cmd.equals("Add Game")) {
+			Globs.switchBody("AddGame");
+		}
     }
 }

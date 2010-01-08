@@ -8,10 +8,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.plaf.metal.*;
-import java.io.*;
-import javax.swing.filechooser.*;
-import javax.swing.text.*;
 import java.sql.*;
 public class MainMenu extends JPanel implements ActionListener {
 	
@@ -40,10 +36,10 @@ public class MainMenu extends JPanel implements ActionListener {
     	//NOTE: MainMenu uses this
     	String cmd = e.getActionCommand();
     	if(cmd.equals("List Games")) {
-    		Globs.switchBody(new GameBrowser().generate());
+    		Globs.switchBody("GameBrowser");
     	}
     	else if(cmd.equals("List People")) {
-    		Globs.switchBody(new PeopleBrowser().generate());
+    		Globs.switchBody("PeopleBrowser");
     	}
     	else if(cmd.equals("Profile")) {
     		

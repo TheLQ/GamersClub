@@ -10,10 +10,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.plaf.metal.*;
-import java.io.*;
-import javax.swing.filechooser.*;
-import javax.swing.text.*;
 import java.sql.*;
 import com.mysql.jdbc.Driver;
  
@@ -74,11 +70,16 @@ public class GamersClub extends JFrame implements ActionListener {
 		contentPane.add(bannerLabel,BorderLayout.CENTER);
 		
 		/***Make Main Body Panel***/
-		bodyPanel = new JPanel();
+		bodyPanel = new JPanel(new CardLayout());
 		bodyBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Home");
 		bodyPanel.setBorder(bodyBorder);
-		bodyPanel.setLayout(new GridLayout(1,1));
-		bodyPanel.add(new MainMenu().generate());
+		//Start adding panels
+		bodyPanel.add(new MainMenu().generate(),"MainMenu");
+		bodyPanel.add(new GameBrowser().generate(),"GameBrowser");
+		bodyPanel.add(new PeopleBrowser().generate(),"PeopleBrowser");
+		bodyPanel.add(new AddGame().generate(),"AddGame");
+		CardLayout cl = (CardLayout)(bodyPanel.getLayout());
+	    cl.show(bodyPanel, "MainMenu");
 		bodyPanel.setMinimumSize(new Dimension(600,500));
 		contentPane.add(bodyPanel);
 		

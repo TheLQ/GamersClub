@@ -8,10 +8,6 @@
  import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.plaf.metal.*;
-import java.io.*;
-import javax.swing.filechooser.*;
-import javax.swing.text.*;
 import java.sql.*;
 public class Globs {
 	public static Connection conn;
@@ -41,12 +37,10 @@ public class Globs {
     
     /* Description: Changes body to a new panel (removes code duplication)
 	 * Used by: MainMenu.actionPerformed and main menu buttons*/
-	public static void switchBody(JComponent newBody) {
-		System.out.println("Switching Body Panels");
-		GamersClub.bodyPanel.removeAll();
-		GamersClub.bodyPanel.add(newBody);
-		GamersClub.bodyPanel.revalidate();
-		GamersClub.bodyPanel.repaint();
+	public static void switchBody(String newBody) {
+		CardLayout cl = (CardLayout)(GamersClub.bodyPanel.getLayout());
+	    cl.show(GamersClub.bodyPanel, newBody);
+
 	}
 	
 	

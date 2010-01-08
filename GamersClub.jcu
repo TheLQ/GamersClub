@@ -36,18 +36,30 @@
 			<path>src\GameBrowser.java</path>
 			<source>true</source>
 			<index>3</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>src\AddGame.java</path>
+			<source>true</source>
+			<index>4</index>
 			<active>true</active>
 		</docitem>
 		<docitem>
 			<path>src\PeopleBrowser.java</path>
 			<source>true</source>
-			<index>4</index>
+			<index>5</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\build.xml</path>
 			<source>true</source>
-			<index>5</index>
+			<index>6</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>W:\01 SCHOOL\02 sophmore\compy sci\java\Jeopardy\jeopardy_teams.java</path>
+			<source>true</source>
+			<index>7</index>
 			<active>false</active>
 		</docitem>
 	</open_files>

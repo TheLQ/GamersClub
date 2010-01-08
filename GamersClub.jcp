@@ -38,6 +38,10 @@
 				<path>swingx-1.6.jar</path>
 			</fileitem>
 			<fileitem>
+				<path>src\AddGame.java</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
 				<path>src\build.xml</path>
 				<folder>src</folder>
 			</fileitem>

@@ -8,10 +8,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.plaf.metal.*;
-import java.io.*;
-import javax.swing.filechooser.*;
-import javax.swing.text.*;
 import java.sql.*;
 class PeopleBrowser extends JPanel implements ActionListener{
 	
