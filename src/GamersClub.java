@@ -11,12 +11,19 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import javax.swing.plaf.metal.*;
 import com.mysql.jdbc.Driver;
  
 public class GamersClub extends JFrame implements ActionListener {
     JPanel contentPane;
     public static JPanel bodyPanel;
     Border bodyBorder;
+    
+    public static MainMenu MainMenu = new MainMenu();
+    public static GameBrowser GameBrowser = new GameBrowser();
+    public static PeopleBrowser PeopleBrowser = new PeopleBrowser();
+    public static AddGame AddGame = new AddGame();
+    public static CopyGame CopyGame = new CopyGame();
     
 	public GamersClub () {      	
       	/***Init***/
@@ -54,7 +61,15 @@ public class GamersClub extends JFrame implements ActionListener {
       		System.exit(0);
       	}
 		
-          	
+        /***Setup Static Instances***
+        MainMenu MainMenu = new MainMenu();
+        GameBrowser GameBrowser = new GameBrowser();
+        PeopleBrowser PeopleBrowser = new PeopleBrowser();
+        AddGame AddGame = new AddGame();
+        CopyGame CopyGame = new CopyGame();
+        
+        
+        
       	/***Get Basic Gui configured***/
       	contentPane = new JPanel(); //el massive panel that holds everything
       	contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
@@ -62,10 +77,10 @@ public class GamersClub extends JFrame implements ActionListener {
       	
       	
       	/***Make Banner***/
-      	JLabel bannerLabel = new JLabel("Gamers Club Distrobution Service",null,JLabel.CENTER);
+      	JLabel bannerLabel = new JLabel("Gamers Club Distribution Service",null,JLabel.CENTER);
 		bannerLabel.setFont(new Font("Serif", Font.PLAIN, 36)); //make it big
 		bannerLabel.setMinimumSize(new Dimension(600,100));
-		bannerLabel.setBorder(BorderFactory.createLineBorder(Color.black)); //Black line border
+		//bannerLabel.setBorder(BorderFactory.createLineBorder(Color.black)); //Black line border
 		bannerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		contentPane.add(bannerLabel,BorderLayout.CENTER);
 		
@@ -74,10 +89,11 @@ public class GamersClub extends JFrame implements ActionListener {
 		bodyBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Home");
 		bodyPanel.setBorder(bodyBorder);
 		//Start adding panels
-		bodyPanel.add(new MainMenu().generate(),"MainMenu");
-		bodyPanel.add(new GameBrowser().generate(),"GameBrowser");
-		bodyPanel.add(new PeopleBrowser().generate(),"PeopleBrowser");
-		bodyPanel.add(new AddGame().generate(),"AddGame");
+		bodyPanel.add(MainMenu.generate(),"MainMenu");
+		bodyPanel.add(GameBrowser.generate(),"GameBrowser");
+		bodyPanel.add(PeopleBrowser.generate(),"PeopleBrowser");
+		bodyPanel.add(AddGame.generate(),"AddGame");
+		bodyPanel.add(CopyGame.generate(),"CopyGame");
 		CardLayout cl = (CardLayout)(bodyPanel.getLayout());
 	    cl.show(bodyPanel, "MainMenu");
 		bodyPanel.setMinimumSize(new Dimension(600,500));
@@ -146,11 +162,6 @@ public class GamersClub extends JFrame implements ActionListener {
     }
     
     public static void main(String[] args) {
-      //needed for possible uncaught exceptions
-      try {	new GamersClub(); }
-      catch(Exception e) {
-      		System.out.println("Error message: " + e.toString());
-      }
-      
+		new GamersClub(); //simply start gamersclub
     }
 }

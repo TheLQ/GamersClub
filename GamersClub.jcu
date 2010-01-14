@@ -11,55 +11,70 @@
 			<folderitem>
 				<path>src</path>
 			</folderitem>
+			<folderitem>
+				<path>components</path>
+			</folderitem>
 		</project>
 	</projects>
 	<open_files>
 		<docitem>
-			<path>src\Globs.java</path>
-			<source>true</source>
+			<path>..\..\..\..\Program Files\Xinox Software\JCreatorV4\start.zip</path>
+			<source>false</source>
 			<index>0</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\GamersClub.java</path>
+			<path>src\Globs.java</path>
 			<source>true</source>
 			<index>1</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\MainMenu.java</path>
+			<path>src\GamersClub.java</path>
 			<source>true</source>
 			<index>2</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\GameBrowser.java</path>
+			<path>src\MainMenu.java</path>
 			<source>true</source>
 			<index>3</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\AddGame.java</path>
+			<path>src\GameBrowser.java</path>
 			<source>true</source>
 			<index>4</index>
-			<active>true</active>
+			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\PeopleBrowser.java</path>
+			<path>src\AddGame.java</path>
 			<source>true</source>
 			<index>5</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\build.xml</path>
+			<path>src\CopyGame.java</path>
 			<source>true</source>
 			<index>6</index>
+			<active>true</active>
+		</docitem>
+		<docitem>
+			<path>src\PeopleBrowser.java</path>
+			<source>true</source>
+			<index>7</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>W:\01 SCHOOL\02 sophmore\compy sci\java\Jeopardy\jeopardy_teams.java</path>
+			<path>src\build.xml</path>
 			<source>true</source>
-			<index>7</index>
+			<index>8</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>components\ProgressMonitorExample.java</path>
+			<source>true</source>
+			<index>9</index>
 			<active>false</active>
 		</docitem>
 	</open_files>

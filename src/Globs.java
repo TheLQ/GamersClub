@@ -11,7 +11,7 @@ import java.awt.event.*;
 import java.sql.*;
 public class Globs {
 	public static Connection conn;
-	public static void setSize(JComponent comp, int height, int width) {
+	public static JComponent setSize(JComponent comp, int height, int width) {
      	Dimension size = comp.getPreferredSize();
      	if(height!=0) {
       		size.height = height;
@@ -20,6 +20,9 @@ public class Globs {
      		size.width = width;
      	}
      	comp.setMinimumSize(size);
+     	comp.setMaximumSize(size);
+     	//comp.setPreferredSize(size);
+     	return comp;
     }
     
     public static void setFormat(JComponent comp, int size, Color background) {

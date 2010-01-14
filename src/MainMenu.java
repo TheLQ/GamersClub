@@ -21,13 +21,17 @@ public class MainMenu extends JPanel implements ActionListener {
 		add(buttonMake("Options"));
 		add(buttonMake("Help"));
 		
+		revalidate(); // this GUI needs relayout
+        repaint();
+
 		return this;
 	}
 	
 	public JButton buttonMake(String text) {
 		JButton main = new JButton(text);
 		main.addActionListener(this);
-		Globs.setSize(main,20,0);
+		//Globs.setSize(main,20,0);
+		main.setAlignmentX(Component.CENTER_ALIGNMENT);
 		Globs.setFormat(main,15,Color.RED);
 		return main;
 	}
