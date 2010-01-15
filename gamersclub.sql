@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 07, 2010 at 06:18 PM
+-- Generation Time: Jan 15, 2010 at 06:03 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -25,7 +25,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `games`
 --
 
-DROP TABLE IF EXISTS `games`;
 CREATE TABLE IF NOT EXISTS `games` (
   `counter` int(2) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -54,7 +53,6 @@ INSERT INTO `games` (`counter`, `name`, `desc`, `type`, `picture`, `dir`, `downl
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(40) NOT NULL,
   `admin` tinyint(1) NOT NULL,

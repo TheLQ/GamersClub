@@ -72,7 +72,7 @@
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>components\ProgressMonitorExample.java</path>
+			<path>components\NIO2_FileVisitor.java</path>
 			<source>true</source>
 			<index>9</index>
 			<active>false</active>
@@ -87,4 +87,13 @@
 			<hidden_targets/>
 		</builditem>
 	</build_files>
+	<breakpoints>
+		<breakpoint>
+			<path>src\CopyGame.java</path>
+			<class/>
+			<session/>
+			<line>213</line>
+			<enable>true</enable>
+		</breakpoint>
+	</breakpoints>
 </workspace_user>

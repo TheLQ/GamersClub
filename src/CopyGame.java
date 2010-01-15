@@ -9,15 +9,16 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.nio.channels.*;
+import java.nio.file.attribute.*;
 
 class CopyGame extends JPanel implements ActionListener {
 	JLabel indexPLabel, copyPLabel, dbPLabel; //all process labels
 	JLabel curTaskLabel, taskStatusLabel; //progress bar label
-	String gamePath,picPath;
-	String gameName;
+	String picPath, gameName;
+	Path gamePath;
 	Date gameCreate;
-	JProgressBar progressBar;
-	private CopyFiles operation;
+	public JProgressBar progressBar;
+	private CopyThread operation;
 	
 	public JPanel generate() {
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -43,7 +44,7 @@ class CopyGame extends JPanel implements ActionListener {
 		progressPanel.add(taskStatusLabel = new JLabel());
 		taskStatusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		setTaskStatus("");
-		JProgressBar progressBar = new JProgressBar(0, 100);
+		progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
 		progressPanel.add(progressBar);
@@ -66,6 +67,18 @@ class CopyGame extends JPanel implements ActionListener {
 	private void setTaskStatus(String status) {
 		taskStatusLabel.setText("<html><h4>Task Status: "+status+"</h4></html>");
 	}
+	
+	private void setBarProgress(int progress) {
+		try {
+            progressBar.setValue(progress);
+        }
+        catch(Exception e) {
+           	System.out.println("------------------ERROR-----------------");
+            System.out.println("progressBar: "+progressBar);
+            e.printStackTrace();
+            System.out.println("--------------END ERROR-----------------");
+        }
+	}
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 	}
@@ -79,7 +92,7 @@ class CopyGame extends JPanel implements ActionListener {
 			Globs.switchBody("AddGame");
 			return;
 		}
-		gamePath = gameDir;
+		gamePath = Paths.get(gameDir);
 		this.picPath = picPath;
 		this.gameName = gameName;
 		this.gameCreate = gameCreate;
@@ -90,11 +103,8 @@ class CopyGame extends JPanel implements ActionListener {
 	private void startCopy() {
 		System.out.println("Starting copy");
 		
-		File srcDir = new File(gamePath);
-		File destDir = new File(Long.toString(Math.abs(new Random().nextLong()), 36));
-		
 		//Setup and run worker thread
-		operation = new CopyFiles(srcDir, destDir);
+		operation = new CopyThread(gamePath, Paths.get(Long.toString(Math.abs(new Random().nextLong()), 36)));
         //operation.addPropertyChangeListener(this);
         operation.execute();
 	}
@@ -115,8 +125,179 @@ class CopyGame extends JPanel implements ActionListener {
 	
 	/******
 	 * Needed Classes For Copying
-	 * Most of code thanks to http://blogs.sun.com/CoreJavaTechTips/entry/making_progress_with_swing_s
+	 * This Class simply initializes CopyFile class, but does so in the background thread
 	 *****/
+    class CopyThread extends SwingWorker<Void, String> {        
+        private static final int PROGRESS_CHECKPOINT = 100000;
+        private Path srcDir, destDir;
+        long totalBytes;
+        
+        CopyThread(Path src, Path dest) {
+            this.srcDir = src;
+            this.destDir = dest;
+        }
+        
+        // perform time-consuming copy task in the worker thread
+        @Override
+        public Void doInBackground() {
+            //Create remote directory if it dosen't exist
+            if(!destDir.exists()) {
+            	try { destDir.createDirectory(); }
+			    catch(Exception e) { e.printStackTrace(); }
+            }
+            
+            //Calculate total data 
+            System.out.println("Starting Directory Transverse");
+            traverse(new File(srcDir.toUri()));
+            
+            //initialize FileCopy
+            System.out.println("Initiating walk file tree on path" +srcDir.toString());
+            Files.walkFileTree(srcDir, new CopyFiles());
+            return null;
+        }
+		
+		// Custom method to recursivly obtain files
+		public final void traverse( final File f ) {
+			if (f.isDirectory()) {
+				final File[] childs = f.listFiles();
+				for( File child : childs ) {
+					traverse(child);
+				}
+				return;
+			}
+			else {
+				totalBytes=totalBytes + (int)f.length();
+			}
+		}
+
+		
+        // process copy task progress data in the event dispatch thread
+        @Override
+        public void process(List<String> data) {
+            if(isCancelled()) { return; }
+            
+            //Search list to see if currently indexing
+            for (String d : data) {
+                if(d.equals("index")) {
+            		setCurTask("Indexing Files");
+            		setTaskStatus("Working...");
+            		return;
+            	}
+            	
+            }
+        }
+        
+        // perform final updates in the event dispatch thread
+        @Override
+        public void done() {
+            try {
+                // call get() to tell us whether the operation completed or 
+                // was canceled; we don't do anything with this result
+                Void result = get();
+                System.out.println("Copy operation completed.\n");                
+            } catch (InterruptedException e) {
+                
+            } catch (CancellationException e) {
+                // get() throws CancellationException if background task was canceled
+                System.out.println("Copy operation canceled.\n");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        private long getKiloBytes(long totalBytes) {
+            return Math.round(totalBytes / 1024);
+        }
+        
+        /*****This actually where the file get copied. Nested and initiated in the swingworker thread***/
+		class CopyFiles extends SimpleFileVisitor<Path> {
+			Path relativeDir, relativeFile, realDestDir, realDestFile;
+			
+			@Override
+			public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) {
+			    //Revitalize to get relative path
+			    relativeFile = gamePath.relativize(file);
+			    System.out.println("Relative File: " + relativeDir);
+			    
+			    //Get absolute destination path
+			    realDestFile = CopyThread.this.destDir.resolve(relativeFile);
+			    System.out.println("Real Destination: " + realDestFile);
+			    
+			    return FileVisitResult.CONTINUE;
+			}
+			
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir) {
+			    //Need to revitalize to get relative path
+			    relativeDir = gamePath.relativize(dir);
+			    System.out.println("Relative Dir: " + relativeDir);
+			        
+			    //Get destination absolute path
+			    realDestDir = CopyThread.this.destDir.resolve(relativeDir);
+			    System.out.println("Real Destination: " + realDestDir);
+			        
+			    //Now create remote directory
+			    if(!realDestDir.exists()) {
+				    try { realDestDir.createDirectory(); }
+				    catch(Exception e) { e.printStackTrace(); }
+			    }
+
+			    return FileVisitResult.CONTINUE;
+			}
+		}
+    }
+}
+
+
+/*********CODE ARCHIVES
+ *
+ *The following was removed because it uses the outdated byte read and write method
+                    File destFile = new File(destDir, f.getName());
+                    long previousLen = 0;
+                    
+                    try {
+                        InputStream in = new FileInputStream(f);
+                        OutputStream out = new FileOutputStream(destFile);                    
+                        byte[] buf = new byte[1024];
+                        int counter = 0;
+                        int len;
+                        
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                            counter += len;
+                            bytesCopied += (destFile.length() - previousLen);
+                            previousLen = destFile.length();
+                            if (counter > PROGRESS_CHECKPOINT || bytesCopied == totalBytes) {
+                                // get % complete for the task
+                                progress = (int)(100*(bytesCopied / totalBytes));
+                                counter = 0;
+                                CopyData current = new CopyData(progress, f.getName(),
+                                                                getKiloBytes(totalBytes),
+                                                                getKiloBytes(bytesCopied));
+
+                                // set new value on bound property
+                                // progress and fire property change event
+                                setProgress(progress);
+                                
+                                // publish current progress data for copy task
+                                publish(current);
+                            }
+                        }
+                        in.close();
+                        out.close();
+                    }
+                    catch (FileNotFoundException e) {
+                    	System.out.println("ERROR IN COPYING FILE: "+e.getMessage());
+                    	e.printStackTrace();
+                    } 
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                
+******************************************************************************
+* Folowing Code Removed due to not correctly trnsversing the file tree, as of copy transfering to filetreewalker
+******************************************************************************
     class CopyFiles extends SwingWorker<Void, CopyData> {        
         private static final int PROGRESS_CHECKPOINT = 100000;
         private File srcDir;
@@ -157,12 +338,20 @@ class CopyGame extends JPanel implements ActionListener {
 			           		
 			           		//transfer of progress data complete, calculate info
 			           		bytesCopied += destFile.length();
-			           		progress = (int)(100*(bytesCopied / totalBytes));
+			           		progress = (int)(100*(getKiloBytes(bytesCopied) / getKiloBytes(totalBytes)));
                             CopyData current = new CopyData(progress, f.getName(),getKiloBytes(totalBytes),getKiloBytes(bytesCopied));
 
                             // set new value on bound property
                             // progress and fire property change event
-                            setProgress(progress);
+                            try {
+                            	setProgress(progress);
+                            }
+                            catch(Exception e) {
+                            	System.out.println("------------------ERROR-----------------");
+					            System.out.println("Progress: " +progress+ " KB Copied: "+getKiloBytes(bytesCopied)+" KB Total: "+getKiloBytes(totalBytes)+" KB Divided: "+(getKiloBytes(totalBytes) / getKiloBytes(bytesCopied)));
+					            e.printStackTrace();
+					            System.out.println("--------------END ERROR-----------------");
+                            }
                                 
                             // publish current progress data for copy task
                             publish(current);
@@ -227,11 +416,10 @@ class CopyGame extends JPanel implements ActionListener {
             // additionally append the note to the console
             String progressNote =  "Progress: "+update.getProgress()+"; Now copying " + update.getFileName() + "<br>" + update.getKiloBytesCopied() + " of " + totalBytes + " kb copied.";
             
+            //System.out.println(progressNote);  
             setCurTask("Copying Files");
             setTaskStatus(progressNote);
-            progressBar.setValue(update.getProgress());   
-            
-            System.out.println(progressNote);     
+            setBarProgress(update.getProgress());
         }
         
         // perform final updates in the event dispatch thread
@@ -257,6 +445,7 @@ class CopyGame extends JPanel implements ActionListener {
         }
     }
     
+    /*****This is the container class for the current file progress****
     class CopyData {        
         private int progress;
         private String fileName;
@@ -297,50 +486,4 @@ class CopyGame extends JPanel implements ActionListener {
         	return type;
         }
     }
-}
-
-
-/*********CODE ARCHIVES
- *
-                    File destFile = new File(destDir, f.getName());
-                    long previousLen = 0;
-                    
-                    try {
-                        InputStream in = new FileInputStream(f);
-                        OutputStream out = new FileOutputStream(destFile);                    
-                        byte[] buf = new byte[1024];
-                        int counter = 0;
-                        int len;
-                        
-                        while ((len = in.read(buf)) > 0) {
-                            out.write(buf, 0, len);
-                            counter += len;
-                            bytesCopied += (destFile.length() - previousLen);
-                            previousLen = destFile.length();
-                            if (counter > PROGRESS_CHECKPOINT || bytesCopied == totalBytes) {
-                                // get % complete for the task
-                                progress = (int)(100*(bytesCopied / totalBytes));
-                                counter = 0;
-                                CopyData current = new CopyData(progress, f.getName(),
-                                                                getKiloBytes(totalBytes),
-                                                                getKiloBytes(bytesCopied));
-
-                                // set new value on bound property
-                                // progress and fire property change event
-                                setProgress(progress);
-                                
-                                // publish current progress data for copy task
-                                publish(current);
-                            }
-                        }
-                        in.close();
-                        out.close();
-                    }
-                    catch (FileNotFoundException e) {
-                    	System.out.println("ERROR IN COPYING FILE: "+e.getMessage());
-                    	e.printStackTrace();
-                    } 
-                    catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }*/
+**/
