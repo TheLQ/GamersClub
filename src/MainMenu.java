@@ -32,7 +32,7 @@ public class MainMenu extends JPanel implements ActionListener {
 		main.addActionListener(this);
 		//Globs.setSize(main,20,0);
 		main.setAlignmentX(Component.CENTER_ALIGNMENT);
-		Globs.setFormat(main,15,Color.RED);
+		Globs.setFormat(main,15,null);
 		return main;
 	}
 	
