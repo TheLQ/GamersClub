@@ -86,7 +86,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 			}
 		}
 		catch(Exception e) {
-      		System.out.println("Error message: " + e.toString());
+      		e.printStackTrace();
       	}
       	
       	
@@ -162,7 +162,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 				
 			}
         	catch(Exception ex) {
-      			System.out.println("Error message: " + ex.toString());
+      			ex.printStackTrace();
       		}
     	} 
     	else {

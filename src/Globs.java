@@ -25,8 +25,7 @@ public class Globs {
      	return comp;
     }
     
-    public static void setFormat(JComponent comp, int size, Color background) {
-        comp.setBackground(background);
+    public static void setTextSize(JComponent comp, int size) {
     	comp.setFont(new Font(comp.getFont().getName(),comp.getFont().getStyle(),size));
     }
     

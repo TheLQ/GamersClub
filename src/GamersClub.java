@@ -11,8 +11,10 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import javax.swing.plaf.*; 
 import javax.swing.plaf.metal.*;
 import com.mysql.jdbc.Driver;
+
  
 public class GamersClub extends JFrame implements ActionListener {
     JPanel contentPane;
@@ -60,15 +62,6 @@ public class GamersClub extends JFrame implements ActionListener {
       		JOptionPane.showMessageDialog(null,"MYSQL Error in GamersClub:\n"+e.toString());
       		System.exit(0);
       	}
-		
-        /***Setup Static Instances***
-        MainMenu MainMenu = new MainMenu();
-        GameBrowser GameBrowser = new GameBrowser();
-        PeopleBrowser PeopleBrowser = new PeopleBrowser();
-        AddGame AddGame = new AddGame();
-        CopyGame CopyGame = new CopyGame();
-        
-        
         
       	/***Get Basic Gui configured***/
       	contentPane = new JPanel(); //el massive panel that holds everything
@@ -101,6 +94,7 @@ public class GamersClub extends JFrame implements ActionListener {
 		
 		/***Finish Up***/
 		add(contentPane); //add to JFrame
+		SwingUtilities.updateComponentTreeUI(contentPane); //tell all children to updateUI to current one
 		setVisible(true); //make JFrame visible
 	}
 	
@@ -159,6 +153,7 @@ public class GamersClub extends JFrame implements ActionListener {
                 e.printStackTrace();
             }
         }
+        
     }
     
     public static void main(String[] args) {

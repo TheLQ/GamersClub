@@ -10,10 +10,11 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.nio.channels.*;
 import java.nio.file.attribute.*;
+import java.lang.*;
 
 class CopyGame extends JPanel implements ActionListener {
 	JLabel indexPLabel, copyPLabel, dbPLabel; //all process labels
-	JLabel curTaskLabel, taskStatusLabel; //progress bar label
+	JLabel taskStatusLabel,dirLocations; //progress bar label
 	String picPath, gameName;
 	Path gamePath;
 	Date gameCreate;
@@ -27,9 +28,9 @@ class CopyGame extends JPanel implements ActionListener {
 		JPanel processList = new JPanel();
 		processList.setLayout(new BoxLayout(processList,BoxLayout.Y_AXIS));
 		processList.setBorder(BorderFactory.createEmptyBorder(40,40,40,40));
-		processList.add(createProcess(indexPLabel,"Indexing Directories"));
-		processList.add(createProcess(copyPLabel,"Copying and Renaming Files (Will take a long time)"));
-		processList.add(createProcess(dbPLabel,"Submit to database"));
+		processList.add(indexPLabel = createProcess("Indexing Directories"));
+		processList.add(copyPLabel = createProcess("Copying and Renaming Files (Will take a long time)"));
+		processList.add(dbPLabel = createProcess("Submit to database"));
 		add(processList);
 		
 		/***Setup Progress Bar***/
@@ -38,42 +39,50 @@ class CopyGame extends JPanel implements ActionListener {
 		progressPanel.setBorder(BorderFactory.createCompoundBorder(
 			BorderFactory.createEmptyBorder(0,40,0,40), 
 			BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)));
-		progressPanel.add(curTaskLabel = new JLabel());
-		curTaskLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		setCurTask("");
-		progressPanel.add(taskStatusLabel = new JLabel());
-		taskStatusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		progressPanel.add(taskStatusLabel = new JLabel("",JLabel.LEFT));
+		Globs.setTextSize(taskStatusLabel,20);
+		taskStatusLabel.setMinimumSize(progressPanel.getMaximumSize());
 		setTaskStatus("");
 		progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
 		progressPanel.add(progressBar);
+		dirLocations = new JLabel("",JLabel.CENTER);
+		dirLocations.setAlignmentX(Component.CENTER_ALIGNMENT);
+		Globs.setTextSize(dirLocations,20);
+		progressPanel.add(dirLocations);
 		add(progressPanel);
 		
 		return this;
 	}
 	
-	private JLabel createProcess(JLabel label,String text) {
-		label = new JLabel();
-		label.setText("<html><h3>"+text+"</h3></html>");
+	private JLabel createProcess(String text) {
+		JLabel label = new JLabel();
+		label.setText(text);
+		Globs.setTextSize(label,20);
 		label.setIcon(new ImageIcon(new ImageIcon("red_arrow.png").getImage().getScaledInstance(33, 25,  java.awt.Image.SCALE_SMOOTH)));
 		return label;
 	}
 	
-	private void setCurTask(String proc) {
-		curTaskLabel.setText("<html><h4>Current Task: "+proc+"</h4></html>");
-	}
-	
 	private void setTaskStatus(String status) {
-		taskStatusLabel.setText("<html><h4>Task Status: "+status+"</h4></html>");
+		taskStatusLabel.setText("<html>Task Status: "+status+"</html>");
 	}
 	
-	private void completeTask(int num) {
-		ImageIcon icon = new ImageIcon(new ImageIcon("green_arrow.png").getImage().getScaledInstance(33, 25,  java.awt.Image.SCALE_SMOOTH));
+	private void currentTask(int num) {
+		ImageIcon checkIcon = new ImageIcon(new ImageIcon("checkmark.png").getImage().getScaledInstance(33, 25,  java.awt.Image.SCALE_SMOOTH));
+		ImageIcon greenIcon = new ImageIcon(new ImageIcon("green_arrow.png").getImage().getScaledInstance(33, 25,  java.awt.Image.SCALE_SMOOTH));
 		switch(num) {
-			case 1: indexPLabel.setIcon(icon); break;
-			case 2: copyPLabel.setIcon(icon); break;
-			case 3: dbPLabel.setIcon(icon); break;
+			case 1: 
+				indexPLabel.setIcon(greenIcon); 
+				break;
+			case 2: 
+				indexPLabel.setIcon(checkIcon); 
+				copyPLabel.setIcon(greenIcon); 
+				break;
+			case 3: 
+				copyPLabel.setIcon(checkIcon); 
+				dbPLabel.setIcon(greenIcon); 
+				break;
 			default: System.out.println("Invalid num specified"); break;
 		}
 	}
@@ -107,20 +116,12 @@ class CopyGame extends JPanel implements ActionListener {
 		this.gameName = gameName;
 		this.gameCreate = gameCreate;
 		
-		startCopy();
-	}
-	
-	private void startCopy() {
 		System.out.println("Starting copy");
 		
 		//Setup and run worker thread
 		operation = new CopyThread(gamePath, Paths.get(Long.toString(Math.abs(new Random().nextLong()), 36)).toAbsolutePath());
-        //operation.addPropertyChangeListener(this);
         operation.execute();
 	}
-	
-
-	
 	
 	/******
 	 * Needed Classes For Copying
@@ -149,12 +150,13 @@ class CopyGame extends JPanel implements ActionListener {
             //Calculate total data 
             System.out.println("Starting Directory Transverse");
             publish(new CopyData("index"));
-            traverse(new File(srcDir.toUri()));
+            traverse(srcDir);
             publish(new CopyData("Index Done"));
             
             //initialize FileCopy
             System.out.println("Initiating walk file tree on path" +srcDir.toString());
             Files.walkFileTree(srcDir, new CopyFiles());
+            publish(new CopyData("Copy Done"));
             
             //Update to db
             //publish(new CopyData("FileCopy"))
@@ -162,17 +164,23 @@ class CopyGame extends JPanel implements ActionListener {
             return null;
         }
 		
-		// Custom method to recursivly obtain files
-		public final void traverse( final File f ) {
-			if (f.isDirectory()) {
-				final File[] childs = f.listFiles();
-				for( File child : childs ) {
-					traverse(child);
+		//Custom method to recursivly obtain files
+		public final void traverse(Path f ) {
+			publish(new CopyData("index"));
+			try {
+				//assume this is a directory
+				DirectoryStream<Path> stream = f.newDirectoryStream();
+				for(Path file : stream) {
+					traverse(file);
 				}
-				return;
 			}
-			else {
-				totalBytes=totalBytes + (int)f.length();
+			catch(NotDirectoryException e) {
+				//Couldn't open directory stream on path, must be a file
+				try { totalBytes+=(long)f.newByteChannel().size();  }
+				catch (Exception ex) { ex.printStackTrace(); }
+			}
+			catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -181,28 +189,34 @@ class CopyGame extends JPanel implements ActionListener {
         @Override
         public void process(List<CopyData> data) {
             if(isCancelled()) { return; }
-            CopyData update  = new CopyData(0, "", 0, 0);
+            CopyData update  = new CopyData(null,null, 0);
             for (CopyData d : data) {
                 // progress updates may be batched, so get the most recent
                 if(d.type.equals("index")) {
-            		setCurTask("Indexing Files");
+            		currentTask(1);
             		setTaskStatus("Working...");
+            		dirLocations.setText("<HTML><h4>Source Directory: "+srcDir.toString()+"<br>Target Directory: "+destDir.toString()+"</HTML>");
             		return;
             	}
             	else if(d.type.equals("Index Done")) {
-            		setCurTask("Indexing Files");
-            		setTaskStatus("Working...");
+            		currentTask(2);
             		return;
             	}
-                if (d.getKiloBytesCopied() > update.getKiloBytesCopied()) {
+            	else if(d.type.equals("Copy Done")) {
+            		currentTask(3);
+            		return;
+            	}
+                if (d.kiloBytesCopied > update.kiloBytesCopied) {
                     update = d;
                 }
             }
             
-            String progressNote =  "Progress: "+progress+"; Now copying " + update.getFileName() + "<br>" + update.getKiloBytesCopied() + " of " + getKiloBytes(totalBytes) + " kb copied.";
+            String progressNote =  "Source File:  " + srcDir.relativize(update.srcFilePath).toString()+
+            						"<p>Destination File:  "+destDir.relativize(update.destFilePath).toString()+
+              						"<p>" + update.kiloBytesCopied + " of " + getKiloBytes(totalBytes) + " kb copied.";
             
             //System.out.println(progressNote);  
-            setCurTask("Copying Files");
+            currentTask(2);
             setTaskStatus(progressNote);
             setBarProgress(progress);
         }
@@ -222,6 +236,7 @@ class CopyGame extends JPanel implements ActionListener {
             }
         }
         
+        //Format the KB to a nice value
         private long getKiloBytes(long totalBytes) {
             return Math.round(totalBytes / 1024);
         }
@@ -233,29 +248,34 @@ class CopyGame extends JPanel implements ActionListener {
 			
 			@Override
 			public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) {
-			    relativeFile = gamePath.relativize(file); //Obtain relative path from revitalizing gamePath and current file
-			    realDestFile = CopyThread.this.destDir.resolve(relativeFile); //Obtain absolute destination file by combining relativeFile and destDir
+			    relativeFile = srcDir.relativize(file); //Obtain relative path from revitalizing gamePath and current file
+			    realDestFile = destDir.resolve(relativeFile); //Obtain absolute destination file by combining relativeFile and destDir
 				try {
 					FileChannel in = new FileInputStream(file.toString()).getChannel();
 	        		FileChannel out = new FileOutputStream(realDestFile.toString()).getChannel();
 			       	long size = in.size();
+			       	long presize = 0;
 			       	long position = 0;
 			       
 			       	while (position < size) {
 				      	position += in.transferTo(position, PROGRESS_CHECKPOINT, out);
 				       		
 				       	//transfer of progress data complete, calculate info
-				       	bytesCopied += out.size();
-				       	progress = (int)(100*((float)bytesCopied / totalBytes));
-	                    CopyData current = new CopyData(progress, file.getName().toString(),getKiloBytes(totalBytes),getKiloBytes(bytesCopied));
+				       	bytesCopied += out.size() - presize;
+				       	presize = out.size();
+				       	progress = (int)(100*((float)bytesCopied / (float)totalBytes));
+	                    CopyData current = new CopyData(file,realDestFile,getKiloBytes(bytesCopied));
 	                    try {
 	                       	setProgress(progress);
 	                    }
 	                    catch(Exception e) {
 	                       	System.out.println("------------------ERROR-----------------");
-				            System.out.println("Progress: " +progress+ " KB Copied: "+getKiloBytes(bytesCopied)+" KB Total: "+getKiloBytes(totalBytes)+" KB Divided: "+(int)((100*(float)bytesCopied / totalBytes)));
+				            System.out.println("Progress: " +progress+ " | Bytes Copied: "+bytesCopied+" | Bytes Total: "+totalBytes+" | Bytes Divided: "+(int)((100*(float)bytesCopied / totalBytes)));
 				            e.printStackTrace();
 				            System.out.println("--------------END ERROR-----------------");
+	                    	
+	                    	//kill to prevent runaway erros
+	                    	System.exit(0);
 	                    }
 	                              
 	                    // publish current progress data for copy task
@@ -276,9 +296,9 @@ class CopyGame extends JPanel implements ActionListener {
 			
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir) {
-			    relativeDir = gamePath.relativize(dir); //Obtain relative path from revitalizing gamePath and current directory
-			    realDestDir = CopyThread.this.destDir.resolve(relativeDir); //Obtain absolute destination directory by combining destDir and relativeDir
-			        
+			    relativeDir = srcDir.relativize(dir); //Obtain relative path from revitalizing gamePath and current directory
+			    realDestDir = destDir.resolve(relativeDir); //Obtain absolute destination directory by combining destDir and relativeDir
+			    
 			    //Now create remote directory
 			    if(!realDestDir.exists()) {
 				    try { realDestDir.createDirectory(); }
@@ -291,43 +311,20 @@ class CopyGame extends JPanel implements ActionListener {
     }
     
     /*****This is the container class for the current file progress****/
-    class CopyData {        
-        private int progress;
-        private String fileName;
-        private long totalKiloBytes;
-        private long kiloBytesCopied;
+    class CopyData {
+        public Path srcFilePath, destFilePath;
+        public long kiloBytesCopied;
         public String type;
         
         CopyData(String type) {
         	this.type = type;        		
         }
         
-        CopyData(int progress, String fileName, long totalKiloBytes, long kiloBytesCopied) {
-            this.progress = progress;
-            this.fileName = fileName;
-            this.totalKiloBytes = totalKiloBytes;
+        CopyData(Path srcFilePath, Path destFilePath, long kiloBytesCopied) {
+        	this.destFilePath = destFilePath;
+            this.srcFilePath = srcFilePath;
             this.kiloBytesCopied = kiloBytesCopied;
             this.type = "";
-        }
-
-        int getProgress() {
-            return progress;
-        }
-        
-        String getFileName() {
-            return fileName;
-        }
-
-        long getTotalKiloBytes() {
-            return totalKiloBytes;
-        }
-
-        long getKiloBytesCopied() {
-            return kiloBytesCopied;
-        }
-        
-        String getType() {
-        	return type;
         }
     }
 }
