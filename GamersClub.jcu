@@ -65,18 +65,6 @@
 			<index>7</index>
 			<active>false</active>
 		</docitem>
-		<docitem>
-			<path>src\build.xml</path>
-			<source>true</source>
-			<index>8</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>components\NIO2_FileVisitor.java</path>
-			<source>true</source>
-			<index>9</index>
-			<active>false</active>
-		</docitem>
 	</open_files>
 	<build_files>
 		<builditem>
@@ -92,7 +80,7 @@
 			<path>src\CopyGame.java</path>
 			<class/>
 			<session/>
-			<line>234</line>
+			<line>228</line>
 			<enable>true</enable>
 		</breakpoint>
 	</breakpoints>

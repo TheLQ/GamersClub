@@ -33,9 +33,6 @@
 			<folderitem>
 				<path>src</path>
 			</folderitem>
-			<folderitem>
-				<path>components</path>
-			</folderitem>
 			<fileitem>
 				<path>mysql-connector-java-5.1.10-bin.jar</path>
 			</fileitem>
@@ -74,11 +71,13 @@
 				<path>src\PeopleBrowser.java</path>
 				<folder>src</folder>
 			</fileitem>
-			<fileitem>
-				<path>components\ProgressMonitorExample.java</path>
-				<folder>components</folder>
-			</fileitem>
 		</include>
+		<exclude>
+			<folderitem>
+				<path>components</path>
+				<dir/>
+			</folderitem>
+		</exclude>
 	</files>
 	<tasks/>
 </project>

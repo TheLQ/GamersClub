@@ -21,7 +21,7 @@ public class Globs {
      	}
      	comp.setMinimumSize(size);
      	comp.setMaximumSize(size);
-     	//comp.setPreferredSize(size);
+     	comp.setPreferredSize(size);
      	return comp;
     }
     

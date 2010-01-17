@@ -13,13 +13,19 @@ import java.awt.event.*;
 import java.sql.*;
 import javax.swing.plaf.*; 
 import javax.swing.plaf.metal.*;
+import java.io.*;
 import com.mysql.jdbc.Driver;
+import javax.swing.text.*;
 
  
 public class GamersClub extends JFrame implements ActionListener {
     JPanel contentPane;
     public static JPanel bodyPanel;
     Border bodyBorder;
+    JTextPane errorLog;
+    PrintStream oldOut,oldErr;
+    JScrollPane errorScroll;
+    StyledDocument errorDoc;
     
     public static MainMenu MainMenu = new MainMenu();
     public static GameBrowser GameBrowser = new GameBrowser();
@@ -27,8 +33,23 @@ public class GamersClub extends JFrame implements ActionListener {
     public static AddGame AddGame = new AddGame();
     public static CopyGame CopyGame = new CopyGame();
     
-	public GamersClub () {      	
+	public GamersClub () {
+		/***Pre init, make error logs so future commands are happy***/
+		errorLog = new JTextPane();
+		errorLog.setEditable(false);
+		errorLog.setAlignmentX(Component.CENTER_ALIGNMENT);
+		errorDoc = errorLog.getStyledDocument();
+		errorScroll = new JScrollPane(errorLog);
+		Globs.setSize(errorScroll,125,0);
+		errorScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+		
       	/***Init***/
+      	PrintStream aPrintStream  = new PrintStream(new FilteredStream(new ByteArrayOutputStream()));
+      	oldOut = System.out;
+      	oldErr = System.err;
+		System.setOut(aPrintStream);
+		System.setErr(aPrintStream);
       	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Will exit when close button is pressed
      	setTitle("Gamers Club Distrobution Service");
        	setMinimumSize(new Dimension(1000,700));
@@ -59,13 +80,17 @@ public class GamersClub extends JFrame implements ActionListener {
 				System.out.println("Username matches to db");
        	}
       	catch(Exception e) {
-      		JOptionPane.showMessageDialog(null,"MYSQL Error in GamersClub:\n"+e.toString());
+			System.setOut(oldOut);
+			System.setErr(oldErr);
+      		e.printStackTrace();
+      		JOptionPane.showMessageDialog(null,"MYSQL Error in GamersClub:\n"+e.toString()+"\n"+e.getLocalizedMessage() );
       		System.exit(0);
       	}
         
       	/***Get Basic Gui configured***/
       	contentPane = new JPanel(); //el massive panel that holds everything
-      	contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+      	//contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+      	contentPane.setLayout(new BorderLayout());
       	contentPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
       	
       	
@@ -75,7 +100,7 @@ public class GamersClub extends JFrame implements ActionListener {
 		bannerLabel.setMinimumSize(new Dimension(600,100));
 		//bannerLabel.setBorder(BorderFactory.createLineBorder(Color.black)); //Black line border
 		bannerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		contentPane.add(bannerLabel,BorderLayout.CENTER);
+		contentPane.add(bannerLabel,BorderLayout.NORTH);
 		
 		/***Make Main Body Panel***/
 		bodyPanel = new JPanel(new CardLayout());
@@ -90,7 +115,10 @@ public class GamersClub extends JFrame implements ActionListener {
 		CardLayout cl = (CardLayout)(bodyPanel.getLayout());
 	    cl.show(bodyPanel, "MainMenu");
 		bodyPanel.setMinimumSize(new Dimension(600,500));
-		contentPane.add(bodyPanel);
+		contentPane.add(bodyPanel,BorderLayout.CENTER);
+		
+		/***Error Log***/
+		contentPane.add(errorScroll,BorderLayout.SOUTH);
 		
 		/***Finish Up***/
 		add(contentPane); //add to JFrame
@@ -155,6 +183,58 @@ public class GamersClub extends JFrame implements ActionListener {
         }
         
     }
+    
+    /***Output Wrapper, Redirects all ouput to log at bottom***/
+    class FilteredStream extends FilterOutputStream {
+    	AttributeSet className, text;
+        public FilteredStream(OutputStream aStream) {
+            super(aStream);
+            
+          	Style style = errorLog.addStyle("Class", null); 
+          	StyleConstants.setForeground(style, Color.blue ); 
+          	
+          	style = errorLog.addStyle("Normal", null); 
+          		
+          	style = errorLog.addStyle("Error", null); 
+          	StyleConstants.setForeground(style, Color.red); 	
+       	}
+
+        public void write(byte b[], int off, int len) throws IOException {
+            //get string version
+            String aString = new String(b , off , len).trim();
+            
+            //don't print empty strings
+            if(aString.length()==0)
+            	return;
+            
+            //get calling class name
+        	StackTraceElement[] elem = Thread.currentThread().getStackTrace();
+        	String callingClass = elem[10].getClassName();
+        	
+        	//Capture real class from error message
+        	Style classStyle;
+        	if(callingClass.equals("java.lang.Throwable")) {
+        		callingClass = elem[12].getClassName();
+        		classStyle = errorDoc.getStyle("Error");
+        	}
+        	else
+        		classStyle = errorDoc.getStyle("Class");
+            try {
+        		if(errorDoc.getLength()!=0)
+        			errorDoc.insertString(errorDoc.getLength(),"\n",errorDoc.getStyle("Normal"));
+        		errorDoc.insertString(errorDoc.getLength(),callingClass+": ",classStyle);
+        		errorDoc.insertString(errorDoc.getLength(),aString,errorDoc.getStyle("Normal"));
+        	} 
+        	catch (BadLocationException ble) {
+            	oldErr.println("Error");
+        	}
+        	
+        	errorLog.repaint();
+			errorLog.setCaretPosition(errorDoc.getLength()); 
+        }
+    }
+
+
     
     public static void main(String[] args) {
 		new GamersClub(); //simply start gamersclub

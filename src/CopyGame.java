@@ -154,7 +154,7 @@ class CopyGame extends JPanel implements ActionListener {
             publish(new CopyData("Index Done"));
             
             //initialize FileCopy
-            System.out.println("Initiating walk file tree on path" +srcDir.toString());
+            System.out.println("Initiating walk file tree on path: " +srcDir.toString());
             Files.walkFileTree(srcDir, new CopyFiles());
             publish(new CopyData("Copy Done"));
             
