@@ -232,6 +232,9 @@ public class GamersClub extends JFrame implements ActionListener {
             	oldErr.println("Error");
         	}
         	
+        	if(error) 
+        		oldErr.println(aString); //so runtime errors can be caught
+        	
         	errorLog.repaint();
 			errorLog.setCaretPosition(errorDoc.getLength()); 
         }

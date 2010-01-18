@@ -11,6 +11,7 @@ import java.util.concurrent.*;
 import java.nio.channels.*;
 import java.nio.file.attribute.*;
 import java.lang.*;
+import org.json.me.*;
 
 class CopyGame extends JPanel implements ActionListener {
 	JLabel indexPLabel, copyPLabel, dbPLabel; //all process labels
@@ -136,7 +137,8 @@ class CopyGame extends JPanel implements ActionListener {
         private Path srcDir, destDir;
         long totalBytes;
         int progress;
-        
+        TreeMap<Path,Path> dirList = new TreeMap<Path,Path>();
+		TreeMap<Path,Path> fileList = new TreeMap<Path,Path>();
         
         CopyThread(Path src, Path dest) {
             this.srcDir = src;
@@ -161,10 +163,10 @@ class CopyGame extends JPanel implements ActionListener {
             //initialize FileCopy
             System.out.println("Initiating walk file tree on path: " +srcDir.toString());
             Files.walkFileTree(srcDir, new CopyFiles());
-            publish(new CopyData("Copy Done"));
             
             //Update to db
-            //publish(new CopyData("FileCopy"))
+            publish(new CopyData("DB Update"));
+            updateDB();
             
             return null;
         }
@@ -188,7 +190,33 @@ class CopyGame extends JPanel implements ActionListener {
 				e.printStackTrace();
 			}
 		}
-
+		
+		/***Update to DB***/
+		public void updateDB() {
+			//publish(new CopyData("DB Update"));
+			
+			//Format nice sql query
+			try {
+				JSONObject master = new JSONObject();
+				JSONObject dirJson = new JSONObject();
+				for (Map.Entry<Path, Path> entry : dirList.entrySet()) {
+					dirJson.put(entry.getKey().toString(),entry.getValue().toString());
+					System.out.println("DirAdding: Key: "+entry.getKey()+" | Value: "+entry.getValue());
+				}
+				JSONObject fileJson = new JSONObject();
+				for (Map.Entry<Path, Path> entry : fileList.entrySet()) {
+					fileJson.put(entry.getKey().toString(),entry.getValue().toString());
+					System.out.println("FileAdding: Key: "+entry.getKey()+" | Value: "+entry.getValue());
+				}
+				master.put("1",dirJson);
+				master.put("2",fileJson);
+				System.out.println(master.toString());
+			}
+			catch(Exception e) { 
+				e.printStackTrace(); 
+			}
+		}
+		
 		
         // process copy task progress data in the event dispatch thread
         @Override
@@ -207,8 +235,9 @@ class CopyGame extends JPanel implements ActionListener {
             		currentTask(2);
             		return;
             	}
-            	else if(d.type.equals("Copy Done")) {
+            	else if(d.type.equals("DB Update")) {
             		currentTask(3);
+            		setBarProgress(100);
             		return;
             	}
                 if (d.kiloBytesCopied > update.kiloBytesCopied) {
@@ -251,8 +280,6 @@ class CopyGame extends JPanel implements ActionListener {
 		class CopyFiles extends SimpleFileVisitor<Path> {
 			Path relativeDir, relativeFile, realDestDir, realDestFile;
 			long bytesCopied = 0;
-			TreeMap<Path,Path> dirList = new TreeMap<Path,Path>();
-			TreeMap<Path,Path> fileList = new TreeMap<Path,Path>();
 			
 			@Override
 			public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) {
