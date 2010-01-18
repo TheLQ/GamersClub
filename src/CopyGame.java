@@ -119,8 +119,12 @@ class CopyGame extends JPanel implements ActionListener {
 		System.out.println("Starting copy");
 		
 		//Setup and run worker thread
-		operation = new CopyThread(gamePath, Paths.get(Long.toString(Math.abs(new Random().nextLong()), 36)).toAbsolutePath());
+		operation = new CopyThread(gamePath, obscurePath().toAbsolutePath());
         operation.execute();
+	}
+	
+	public Path obscurePath() {
+		return Paths.get(Long.toString(Math.abs(new Random().nextLong()), 36));
 	}
 	
 	/******
@@ -132,6 +136,7 @@ class CopyGame extends JPanel implements ActionListener {
         private Path srcDir, destDir;
         long totalBytes;
         int progress;
+        
         
         CopyThread(Path src, Path dest) {
             this.srcDir = src;
@@ -226,7 +231,8 @@ class CopyGame extends JPanel implements ActionListener {
         public void done() {
             try {
                 Void result = get();
-                System.out.println("Copy operation completed.\n");                
+                System.out.println("Copy operation completed.\n");
+                setBarProgress(100); //sometimes process isn't called to finish up, so...
             } catch (InterruptedException e) {
                 
             } catch (CancellationException e) {
@@ -245,11 +251,32 @@ class CopyGame extends JPanel implements ActionListener {
 		class CopyFiles extends SimpleFileVisitor<Path> {
 			Path relativeDir, relativeFile, realDestDir, realDestFile;
 			long bytesCopied = 0;
+			TreeMap<Path,Path> dirList = new TreeMap<Path,Path>();
+			TreeMap<Path,Path> fileList = new TreeMap<Path,Path>();
 			
 			@Override
 			public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) {
 			    relativeFile = srcDir.relativize(file); //Obtain relative path from revitalizing gamePath and current file
-			    realDestFile = destDir.resolve(relativeFile); //Obtain absolute destination file by combining relativeFile and destDir
+			    
+			    //Get obscurified path
+			    int nameCount = (relativeFile.getNameCount()<=1) ? 1 :  relativeFile.getNameCount()-1; //prevent root files from calling parent
+			    Path obscParent = dirList.get(relativeFile.subpath(0,nameCount));
+			    System.out.println("Name Count: "+relativeFile.getNameCount()+" | Relative File: "+relativeFile+" | Parent: "+obscParent);
+			    if(obscParent == null && nameCount != 1) {
+			    	//thats not supposed to happen...
+			    	System.err.println("Can't find parent folder! obscParent is null!");
+			    	cancel(true);
+			    }
+			    Path relativeDest = null;
+			    if(obscParent == null)
+			    	relativeDest = destDir.resolve(obscurePath()); //for root files
+			    else
+			    	relativeDest = obscParent.resolve(obscurePath());
+			    
+			    //add to fileList for
+			    fileList.put(relativeFile,relativeDest);
+			    
+			    realDestFile = destDir.resolve(relativeDest); //Obtain absolute destination file by combining relativeFile and obscParent
 				try {
 					FileChannel in = new FileInputStream(file.toString()).getChannel();
 	        		FileChannel out = new FileOutputStream(realDestFile.toString()).getChannel();
@@ -275,7 +302,7 @@ class CopyGame extends JPanel implements ActionListener {
 				            System.out.println("--------------END ERROR-----------------");
 	                    	
 	                    	//kill to prevent runaway erros
-	                    	System.exit(0);
+	                    	cancel(true);
 	                    }
 	                              
 	                    // publish current progress data for copy task
@@ -297,7 +324,32 @@ class CopyGame extends JPanel implements ActionListener {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir) {
 			    relativeDir = srcDir.relativize(dir); //Obtain relative path from revitalizing gamePath and current directory
-			    realDestDir = destDir.resolve(relativeDir); //Obtain absolute destination directory by combining destDir and relativeDir
+			    
+			    //The inital directory is null, so...
+			    if(relativeDir==null) {
+			    	realDestDir = destDir.resolve(relativeDir);
+			    	return FileVisitResult.CONTINUE;
+			    }
+			    	
+			    //Generate destination directory
+			    Path relativeDest = null;
+			    int nameCount = (relativeDir.getNameCount()==1) ? 1 :  relativeDir.getNameCount()-1;
+			    Path obscParent = dirList.get(relativeDir.subpath(0,nameCount));
+			    System.out.println("Name Count: "+relativeDir.getNameCount()+" | Relative Dir: "+relativeDir+" | Parent: "+relativeDir.subpath(0,nameCount));
+			    if(obscParent != null) { //found it
+			    	relativeDest = obscParent.resolve(obscurePath());
+			    	System.out.println("Relative Dir Dest: "+relativeDest);
+			    	dirList.put(relativeDir,relativeDest);
+			    	realDestDir = destDir.resolve(relativeDest); 
+			    	dirList.put(relativeDir,relativeDest);
+			    }
+			    else { //didn't find it, must be in root
+			    	Path obscPath = obscurePath();
+			    	realDestDir = destDir.resolve(obscPath); 
+			    	dirList.put(relativeDir,obscPath);
+			    }
+			    	
+			    //realDestDir = destDir.resolve(relativeDest); //Obtain absolute destination directory by combining destDir and relativeDir
 			    
 			    //Now create remote directory
 			    if(!realDestDir.exists()) {

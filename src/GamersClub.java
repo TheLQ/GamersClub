@@ -45,11 +45,10 @@ public class GamersClub extends JFrame implements ActionListener {
 
 		
       	/***Init***/
-      	PrintStream aPrintStream  = new PrintStream(new FilteredStream(new ByteArrayOutputStream()));
       	oldOut = System.out;
       	oldErr = System.err;
-		System.setOut(aPrintStream);
-		System.setErr(aPrintStream);
+		System.setOut(new PrintStream(new FilteredStream(new ByteArrayOutputStream(),false)));
+		System.setErr(new PrintStream(new FilteredStream(new ByteArrayOutputStream(),true)));
       	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Will exit when close button is pressed
      	setTitle("Gamers Club Distrobution Service");
        	setMinimumSize(new Dimension(1000,700));
@@ -83,7 +82,7 @@ public class GamersClub extends JFrame implements ActionListener {
 			System.setOut(oldOut);
 			System.setErr(oldErr);
       		e.printStackTrace();
-      		JOptionPane.showMessageDialog(null,"MYSQL Error in GamersClub:\n"+e.toString()+"\n"+e.getLocalizedMessage() );
+      		JOptionPane.showMessageDialog(null,"MYSQL Error in GamersClub:\n"+e.toString());
       		System.exit(0);
       	}
         
@@ -187,14 +186,19 @@ public class GamersClub extends JFrame implements ActionListener {
     /***Output Wrapper, Redirects all ouput to log at bottom***/
     class FilteredStream extends FilterOutputStream {
     	AttributeSet className, text;
-        public FilteredStream(OutputStream aStream) {
+    	boolean error;
+    	
+        public FilteredStream(OutputStream aStream,boolean error) {
             super(aStream);
+            this.error = error;
             
           	Style style = errorLog.addStyle("Class", null); 
-          	StyleConstants.setForeground(style, Color.blue ); 
-          	
+          	StyleConstants.setForeground(style, Color.RED );
+
+          	StyleConstants.setForeground(style, Color.BLUE ); 
+          	        	
           	style = errorLog.addStyle("Normal", null); 
-          		
+          	
           	style = errorLog.addStyle("Error", null); 
           	StyleConstants.setForeground(style, Color.red); 	
        	}
@@ -206,23 +210,22 @@ public class GamersClub extends JFrame implements ActionListener {
             //don't print empty strings
             if(aString.length()==0)
             	return;
-            
             //get calling class name
         	StackTraceElement[] elem = Thread.currentThread().getStackTrace();
         	String callingClass = elem[10].getClassName();
         	
         	//Capture real class from error message
-        	Style classStyle;
-        	if(callingClass.equals("java.lang.Throwable")) {
+        	if(callingClass.equals("java.lang.Throwable"))
         		callingClass = elem[12].getClassName();
-        		classStyle = errorDoc.getStyle("Error");
-        	}
-        	else
-        		classStyle = errorDoc.getStyle("Class");
+        	
+        	Style style = null;
+        	if(error) style = errorDoc.getStyle("Error");
+        	else style = errorDoc.getStyle("Class");
+        	
             try {
         		if(errorDoc.getLength()!=0)
         			errorDoc.insertString(errorDoc.getLength(),"\n",errorDoc.getStyle("Normal"));
-        		errorDoc.insertString(errorDoc.getLength(),callingClass+": ",classStyle);
+        		errorDoc.insertString(errorDoc.getLength(),callingClass+": ",style);
         		errorDoc.insertString(errorDoc.getLength(),aString,errorDoc.getStyle("Normal"));
         	} 
         	catch (BadLocationException ble) {
@@ -233,7 +236,6 @@ public class GamersClub extends JFrame implements ActionListener {
 			errorLog.setCaretPosition(errorDoc.getLength()); 
         }
     }
-
 
     
     public static void main(String[] args) {
