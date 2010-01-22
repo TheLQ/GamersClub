@@ -9,6 +9,10 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.net.*;
+import org.json.me.*;
+import java.io.*;
+
 public class Globs {
 	public static Connection conn;
 	public static JComponent setSize(JComponent comp, int height, int width) {
@@ -44,6 +48,41 @@ public class Globs {
 	    cl.show(GamersClub.bodyPanel, newBody);
 
 	}
+	
+	public static String webTalk(String url) {
+		return webTalk(url,null);
+	}
+	
+	public static String webTalk(String url,String postVars) {
+		String allLine = "";
+		try {
+			URL ourURL = new URL(url);
+	    	URLConnection conn = ourURL.openConnection();
+	    	
+	    	conn.setDoOutput(true);
+	    	OutputStreamWriter wr = null;
+	    	if(postVars != null) {
+	    		wr = new OutputStreamWriter(conn.getOutputStream());
+		    	wr.write(postVars);
+	    		wr.flush();
+	    	}
+	    	
+	    	// Get the response
+	    	BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	    	String line;
+	    	while ((line = rd.readLine()) != null)
+	        	allLine+=line;
+	    	if(postVars != null)
+	    		wr.close();
+	    	rd.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return allLine.trim();
+	}
+	
+	
 	
 	
 }

@@ -84,8 +84,9 @@ public class JSONArray {
 
     /**
      * The Vector where the JSONArray's properties are kept.
+     * MOD: Foced to be public so stupid properties are open
      */
-    private Vector myArrayList;
+    public Vector myArrayList;
 
 
     /**

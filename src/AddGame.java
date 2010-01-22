@@ -76,6 +76,7 @@ class AddGame extends JPanel implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if(useWhat.equals("DIR_ONLY")) {
 					System.out.println("Generating Directory Chooser");
+					AddGame.this.repaint();
 					JDirectoryChooser chooser = new JDirectoryChooser();
 					int choice = chooser.showOpenDialog(null);
 					if(choice == JDirectoryChooser.CANCEL_OPTION) {
@@ -89,6 +90,7 @@ class AddGame extends JPanel implements ActionListener {
 				}
 				else if(useWhat.equals("FILE_ONLY")) {
 					System.out.println("Generating File Chooser");
+					AddGame.this.repaint();
 					JFileChooser fc = new JFileChooser();
     				fc.setFileFilter(new FileNameExtensionFilter("All Pictures","tiff" ,"tif","gif","jpeg","jpg","bmp","png"));
 					int returnVal = fc.showOpenDialog(null);

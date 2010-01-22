@@ -16,6 +16,7 @@ import javax.swing.plaf.metal.*;
 import java.io.*;
 import com.mysql.jdbc.Driver;
 import javax.swing.text.*;
+import org.json.me.*;
 
  
 public class GamersClub extends JFrame implements ActionListener {
@@ -27,11 +28,18 @@ public class GamersClub extends JFrame implements ActionListener {
     JScrollPane errorScroll;
     StyledDocument errorDoc;
     
+    /***Static Class Refrences***/
     public static MainMenu MainMenu = new MainMenu();
     public static GameBrowser GameBrowser = new GameBrowser();
     public static PeopleBrowser PeopleBrowser = new PeopleBrowser();
     public static AddGame AddGame = new AddGame();
     public static CopyGame CopyGame = new CopyGame();
+    
+    /***Static User Info***/
+    public static String userRealName;
+    public static String uid;
+    public static Boolean admin;
+    public static String userName;
     
 	public GamersClub () {
 		/***Pre init, make error logs so future commands are happy***/
@@ -49,42 +57,37 @@ public class GamersClub extends JFrame implements ActionListener {
       	oldErr = System.err;
 		System.setOut(new PrintStream(new FilteredStream(new ByteArrayOutputStream(),false)));
 		System.setErr(new PrintStream(new FilteredStream(new ByteArrayOutputStream(),true)));
+      	System.out.println("Initializing");
       	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Will exit when close button is pressed
      	setTitle("Gamers Club Distrobution Service");
        	setMinimumSize(new Dimension(1000,700));
        	initLookAndFeel("System",""); //changes look and feel for interesting gui
        	
-       	try {
-	    	/***Connect to database***/
-			Class.forName("com.mysql.jdbc.Driver");
-			Globs.conn = DriverManager.getConnection ("jdbc:mysql://localhost/gamersclub", "root", "");
-			System.out.println ("Database connection established");
-			
-			/***Check User Credentials***/
-			String username = System.getProperty("user.name");
-			System.out.println("Username: "+username);
-			Statement s = Globs.conn.createStatement();
-			ResultSet rs = s.executeQuery ("SELECT * FROM users WHERE `username`='"+username+"'");
-			int count = 0;
-			while (rs.next()) {
-				String nameVal = rs.getString ("name");
-				System.out.println("name = " + nameVal);
-				++count;
-			}			
-			if(count == 0) {
+       	/***Check if user exists***/
+       	System.out.println("System user account: "+System.getProperty("user.name")+", checking with database");
+		String response = Globs.webTalk("http://localhost:80/GamersClub/GCTalk.php?mode=userExists&user="+System.getProperty("user.name"));
+		JSONObject dbInfo = null;
+		System.out.println("Response: "+response);
+		try{
+			dbInfo = new JSONObject(response);
+			uid = (String)dbInfo.get("uid");
+			userRealName = (String)dbInfo.get("name");
+			userName = (String)dbInfo.get("username");
+			admin = (Integer.parseInt((String)dbInfo.get("admin")) == 1) ? true : false;
+			System.out.println("Name: "+userName+" | Real Name: "+userRealName+" | UID: "+uid+" | Is Admin: "+admin);
+		}
+		catch(JSONException e) {
+			//must of false or garbage
+			if(response.equals("false")) {
 				JOptionPane.showMessageDialog(null,"You are not in the Gamers Club.");
 				System.exit(0);
 			}
 			else
-				System.out.println("Username matches to db");
-       	}
-      	catch(Exception e) {
-			System.setOut(oldOut);
-			System.setErr(oldErr);
-      		e.printStackTrace();
-      		JOptionPane.showMessageDialog(null,"MYSQL Error in GamersClub:\n"+e.toString());
-      		System.exit(0);
-      	}
+				System.err.println("Garbage for input, Parsing JSON Failed!");
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
         
       	/***Get Basic Gui configured***/
       	contentPane = new JPanel(); //el massive panel that holds everything
@@ -245,3 +248,41 @@ public class GamersClub extends JFrame implements ActionListener {
 		new GamersClub(); //simply start gamersclub
     }
 }
+
+/*******CODE ARCHIVES*******
+ *
+ *
+ ***********************************************
+ * Removed for favor of middleman php script
+ ***********************************************
+ *       	try {
+	    	/***Connect to database***
+			Class.forName("com.mysql.jdbc.Driver");
+			Globs.conn = DriverManager.getConnection ("jdbc:mysql://localhost/gamersclub", "root", "");
+			System.out.println ("Database connection established");
+			
+			/***Check User Credentials***
+			String username = System.getProperty("user.name");
+			System.out.println("Username: "+username);
+			Statement s = Globs.conn.createStatement();
+			ResultSet rs = s.executeQuery ("SELECT * FROM users WHERE `username`='"+username+"'");
+			int count = 0;
+			while (rs.next()) {
+				String nameVal = rs.getString ("name");
+				System.out.println("name = " + nameVal);
+				++count;
+			}			
+			if(count == 0) {
+				JOptionPane.showMessageDialog(null,"You are not in the Gamers Club.");
+				System.exit(0);
+			}
+			else
+				System.out.println("Username matches to db");
+       	}
+      	catch(Exception e) {
+			System.setOut(oldOut);
+			System.setErr(oldErr);
+      		e.printStackTrace();
+      		JOptionPane.showMessageDialog(null,"MYSQL Error in GamersClub:\n"+e.toString());
+      		System.exit(0);
+      	}*/

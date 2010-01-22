@@ -33,6 +33,21 @@
 			<folderitem>
 				<path>src</path>
 			</folderitem>
+			<folderitem>
+				<path>src\org</path>
+			</folderitem>
+			<folderitem>
+				<path>src\org\json</path>
+			</folderitem>
+			<folderitem>
+				<path>src\org\json\me</path>
+			</folderitem>
+			<folderitem>
+				<path>src\org\json\me\test</path>
+			</folderitem>
+			<folderitem>
+				<path>src\org\json\me\util</path>
+			</folderitem>
 			<fileitem>
 				<path>mysql-connector-java-5.1.10-bin.jar</path>
 			</fileitem>
@@ -70,6 +85,50 @@
 			<fileitem>
 				<path>src\PeopleBrowser.java</path>
 				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\JSONArray.java</path>
+				<folder>src\org\json\me</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\JSONException.java</path>
+				<folder>src\org\json\me</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\JSONObject.java</path>
+				<folder>src\org\json\me</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\JSONString.java</path>
+				<folder>src\org\json\me</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\JSONStringer.java</path>
+				<folder>src\org\json\me</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\JSONTokener.java</path>
+				<folder>src\org\json\me</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\JSONWriter.java</path>
+				<folder>src\org\json\me</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\StringWriter.java</path>
+				<folder>src\org\json\me</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\test\Test.java</path>
+				<folder>src\org\json\me\test</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\util\XML.java</path>
+				<folder>src\org\json\me\util</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\org\json\me\util\XMLTokener.java</path>
+				<folder>src\org\json\me\util</folder>
 			</fileitem>
 		</include>
 		<exclude>

@@ -12,6 +12,21 @@
 				<path>src</path>
 			</folderitem>
 			<folderitem>
+				<path>src\org</path>
+			</folderitem>
+			<folderitem>
+				<path>src\org\json</path>
+			</folderitem>
+			<folderitem>
+				<path>src\org\json\me</path>
+			</folderitem>
+			<folderitem>
+				<path>src\org\json\me\test</path>
+			</folderitem>
+			<folderitem>
+				<path>src\org\json\me\util</path>
+			</folderitem>
+			<folderitem>
 				<path>components</path>
 			</folderitem>
 		</project>
@@ -45,7 +60,7 @@
 			<path>src\GameBrowser.java</path>
 			<source>true</source>
 			<index>4</index>
-			<active>false</active>
+			<active>true</active>
 		</docitem>
 		<docitem>
 			<path>src\AddGame.java</path>
@@ -57,12 +72,30 @@
 			<path>src\CopyGame.java</path>
 			<source>true</source>
 			<index>6</index>
-			<active>true</active>
+			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\PeopleBrowser.java</path>
+			<path>src\org\json\me\JSONObject.java</path>
 			<source>true</source>
 			<index>7</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>src\org\json\me\JSONArray.java</path>
+			<source>true</source>
+			<index>8</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>components\TreeDemo.java</path>
+			<source>true</source>
+			<index>9</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>components\TreeRootHide.java</path>
+			<source>true</source>
+			<index>10</index>
 			<active>false</active>
 		</docitem>
 	</open_files>
@@ -75,13 +108,4 @@
 			<hidden_targets/>
 		</builditem>
 	</build_files>
-	<breakpoints>
-		<breakpoint>
-			<path>src\CopyGame.java</path>
-			<class/>
-			<session/>
-			<line>228</line>
-			<enable>true</enable>
-		</breakpoint>
-	</breakpoints>
 </workspace_user>

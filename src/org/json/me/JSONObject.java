@@ -125,8 +125,9 @@ public class JSONObject {
 
     /**
      * The hash map where the JSONObject's properties are kept.
+     * MOD: Forced to be pubic so we can get stupid properties
      */
-    private Hashtable myHashMap;
+    public Hashtable myHashMap;
 
 
     /**

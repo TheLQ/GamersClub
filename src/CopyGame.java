@@ -12,6 +12,7 @@ import java.nio.channels.*;
 import java.nio.file.attribute.*;
 import java.lang.*;
 import org.json.me.*;
+import java.net.*;
 
 class CopyGame extends JPanel implements ActionListener {
 	JLabel indexPLabel, copyPLabel, dbPLabel; //all process labels
@@ -199,6 +200,8 @@ class CopyGame extends JPanel implements ActionListener {
 			try {
 				JSONObject master = new JSONObject();
 				JSONObject dirJson = new JSONObject();
+				JSONObject infoJson = new JSONObject();
+				infoJson.put("uid",GamersClub.uid);
 				for (Map.Entry<Path, Path> entry : dirList.entrySet()) {
 					dirJson.put(entry.getKey().toString(),entry.getValue().toString());
 					System.out.println("DirAdding: Key: "+entry.getKey()+" | Value: "+entry.getValue());
@@ -210,10 +213,20 @@ class CopyGame extends JPanel implements ActionListener {
 				}
 				master.put("1",dirJson);
 				master.put("2",fileJson);
-				System.out.println(master.toString());
+				String data = URLEncoder.encode("data", "UTF-8") + "=" + URLEncoder.encode(master.toString(), "UTF-8"); 
+				
+				System.out.println("Buiding done, submitting to website");
+				String response = Globs.webTalk("http://localhost:80/GamersClub/GCTalk.php?mode=addGame",data);
+				
+    			if(response.equals("Sucess"))
+    				System.out.println("Website Response: Sucess");
+    			else {
+    				System.err.println("Update failed. Website Response: "+response);
+    				cancel(true);
+    			}
 			}
-			catch(Exception e) { 
-				e.printStackTrace(); 
+			catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 		
@@ -265,7 +278,7 @@ class CopyGame extends JPanel implements ActionListener {
             } catch (InterruptedException e) {
                 
             } catch (CancellationException e) {
-                System.out.println("Copy operation canceled.\n");
+                System.err.println("Copy operation canceled.\n");
             } catch (Exception e) {
                 e.printStackTrace();
             }
