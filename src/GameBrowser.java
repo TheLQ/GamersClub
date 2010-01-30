@@ -35,6 +35,8 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 	public JXMultiSplitPane generate() {
 		System.out.println("GameBrowser Class initiated");
 		
+		removeAll(); //Might get recalled, so clear panel first
+		
 		/***Configure layout***/		
 		getMultiSplitLayout().setModel(MultiSplitLayout.parseModel("(ROW (LEAF name=sidebar weight=0.25) (COLUMN weight=0.75 (ROW weight=0.6 (LEAF name=pic weight=0.25) (LEAF name=desc weight=0.75)) (LEAF name=download weight=0.4)))))"));
 		add(buildTreeMenu(),"sidebar");
@@ -75,13 +77,12 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
         
         
         /***Start adding nodes***/
-
 		try {
 			DefaultMutableTreeNode category = null;
         	DefaultMutableTreeNode book = null;
 		
 			System.out.println("Asking server for game list");
-			String response = Globs.webTalk("http://localhost:80/GamersClub/GCTalk.php?mode=buildTree");
+			String response = Globs.webTalk("mode=buildTree");
 			//System.out.println("Response: "+response);
 			
 			//use modified JSONObject to return hashmap iterator
@@ -197,7 +198,25 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 			picPanel.add(new JLabel("<HTML><b>Date Game Created:</b> " + DateFormat.getDateInstance(DateFormat.FULL).format(Long.valueOf(gameInfo.get("createDate").toString().trim())) + "</HTML>"));
 			
 			/***Setup Download Pane***/
-				
+			downPanel.removeAll();
+			try {
+				Iterator downJSON = new JSONObject(gameInfo.get("picture").toString()).myHashMap.entrySet().iterator();
+				while(downJSON.hasNext()) {
+					Map.Entry currentDir = (Map.Entry)downJSON.next();
+					JButton downButton = new JButton(currentDir.getKey().toString());
+					downButton.setActionCommand(currentDir.getValue().toString());
+					downButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							//Simply pass control to PasteGame
+							GamersClub.PasteGame.config(e.getActionCommand());
+						}
+					});
+					downPanel.add(downButton);
+				}
+			}
+			catch(Exception ex) {
+				ex.printStackTrace();
+			}
     	} 
     	else {
         	System.out.println("NodeList Selected: "+nodeInfo); 

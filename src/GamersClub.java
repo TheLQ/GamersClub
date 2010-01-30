@@ -14,9 +14,9 @@ import java.sql.*;
 import javax.swing.plaf.*; 
 import javax.swing.plaf.metal.*;
 import java.io.*;
-import com.mysql.jdbc.Driver;
 import javax.swing.text.*;
 import org.json.me.*;
+import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
  
 public class GamersClub extends JFrame implements ActionListener {
@@ -34,6 +34,7 @@ public class GamersClub extends JFrame implements ActionListener {
     public static PeopleBrowser PeopleBrowser = new PeopleBrowser();
     public static AddGame AddGame = new AddGame();
     public static CopyGame CopyGame = new CopyGame();
+    public static PasteGame PasteGame = new PasteGame();
     
     /***Static User Info***/
     public static String userRealName;
@@ -61,11 +62,18 @@ public class GamersClub extends JFrame implements ActionListener {
       	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Will exit when close button is pressed
      	setTitle("Gamers Club Distrobution Service");
        	setMinimumSize(new Dimension(1000,700));
-       	initLookAndFeel("System",""); //changes look and feel for interesting gui
+       	//initLookAndFeel("System",""); //changes look and feel for interesting gui
+       	try {
+      		UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+   		} 
+   		catch (Exception e) {
+   			e.printStackTrace();
+   		}
+
        	
        	/***Check if user exists***/
        	System.out.println("System user account: "+System.getProperty("user.name")+", checking with database");
-		String response = Globs.webTalk("http://localhost:80/GamersClub/GCTalk.php?mode=userExists&user="+System.getProperty("user.name"));
+		String response = Globs.webTalk("mode=userExists&user="+System.getProperty("user.name"));
 		JSONObject dbInfo = null;
 		System.out.println("Response: "+response);
 		try{
@@ -114,6 +122,7 @@ public class GamersClub extends JFrame implements ActionListener {
 		bodyPanel.add(PeopleBrowser.generate(),"PeopleBrowser");
 		bodyPanel.add(AddGame.generate(),"AddGame");
 		bodyPanel.add(CopyGame.generate(),"CopyGame");
+		bodyPanel.add(PasteGame.generate(),"PasteGame");
 		CardLayout cl = (CardLayout)(bodyPanel.getLayout());
 	    cl.show(bodyPanel, "MainMenu");
 		bodyPanel.setMinimumSize(new Dimension(600,500));
@@ -237,6 +246,8 @@ public class GamersClub extends JFrame implements ActionListener {
         	
         	if(error) 
         		oldErr.println(aString); //so runtime errors can be caught
+        	else
+        		oldOut.println(aString); //so runtime errors can be caught
         	
         	errorLog.repaint();
 			errorLog.setCaretPosition(errorDoc.getLength()); 

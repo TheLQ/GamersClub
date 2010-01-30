@@ -1,3 +1,9 @@
+/*******************************
+ * CopyGame by Leon Blakey
+ *
+ * @desc: Copies the game that the user submits
+ *******************************/
+
 import javax.swing.*;
 import java.awt.Component;
 import java.awt.event.*;
@@ -13,15 +19,16 @@ import java.nio.file.attribute.*;
 import java.lang.*;
 import org.json.me.*;
 import java.net.*;
+import java.text.*;
 
 class CopyGame extends JPanel implements ActionListener {
 	JLabel indexPLabel, copyPLabel, dbPLabel; //all process labels
 	JLabel taskStatusLabel,dirLocations; //progress bar label
 	String picPath, gameName;
 	Path gamePath;
-	Date gameCreate;
 	public JProgressBar progressBar;
 	private CopyThread operation;
+	String gameDesc, gameType, gameDate, uploadName;
 	
 	public JPanel generate() {
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -107,7 +114,7 @@ class CopyGame extends JPanel implements ActionListener {
 	/*******************************************************************************************************
 	 * Start File Transfer Area
 	 *******************************************************************************************************/
-	public void config(String gameDir, String picPath, String gameName, Date gameDate) {
+	public void config(String gameDir, String picPath, String gameName, String gameDate, String gameDesc, String gameType, String uploadName) {
 		Globs.switchBody("CopyGame");
 		if(JOptionPane.showConfirmDialog(null, "Do you wish to start? \n NOTE: YOU CANNOT EXIT ONCE THE PROCESS IS STARTED!! \n MAKE SURE YOU HAVE ENOUGH TIME TO COPY THE GAME, ESPICALLY WITH LARGE ONE'S!!")!=JOptionPane.YES_OPTION) {
 			Globs.switchBody("AddGame");
@@ -116,7 +123,10 @@ class CopyGame extends JPanel implements ActionListener {
 		gamePath = Paths.get(gameDir);
 		this.picPath = picPath;
 		this.gameName = gameName;
-		this.gameCreate = gameCreate;
+		this.gameDate = gameDate;
+		this.gameDesc = gameDesc;
+		this.gameType = gameType;
+		this.uploadName = uploadName;
 		
 		System.out.println("Starting copy");
 		
@@ -140,6 +150,7 @@ class CopyGame extends JPanel implements ActionListener {
         int progress;
         TreeMap<Path,Path> dirList = new TreeMap<Path,Path>();
 		TreeMap<Path,Path> fileList = new TreeMap<Path,Path>();
+		Path newPicPath;
         
         CopyThread(Path src, Path dest) {
             this.srcDir = src;
@@ -152,7 +163,7 @@ class CopyGame extends JPanel implements ActionListener {
             //Create remote directory if it dosen't exist
             if(!destDir.exists()) {
             	try { destDir.createDirectory(); }
-			    catch(Exception e) { e.printStackTrace(); }
+			    catch(Exception e) { e.printStackTrace(); cancel(true); }
             }
             
             //Calculate total data 
@@ -161,7 +172,18 @@ class CopyGame extends JPanel implements ActionListener {
             traverse(srcDir);
             publish(new CopyData("Index Done"));
             
-            //initialize FileCopy
+            //Copy Picture
+            System.out.println("Starting to copy picture");
+            newPicPath = destDir.resolve(obscurePath());
+            try {
+	            FileChannel in = new FileInputStream(picPath.toString()).getChannel();
+		       	FileChannel out = new FileOutputStream(newPicPath.toString()).getChannel();
+				in.transferTo(0, out.size(), out);
+            }
+            catch(Exception e) {
+            	e.printStackTrace();
+            	cancel(true);
+            }
             System.out.println("Initiating walk file tree on path: " +srcDir.toString());
             Files.walkFileTree(srcDir, new CopyFiles());
             
@@ -185,10 +207,11 @@ class CopyGame extends JPanel implements ActionListener {
 			catch(NotDirectoryException e) {
 				//Couldn't open directory stream on path, must be a file
 				try { totalBytes+=(long)f.newByteChannel().size();  }
-				catch (Exception ex) { ex.printStackTrace(); }
+				catch (Exception ex) { ex.printStackTrace(); cancel(true); }
 			}
 			catch(Exception e) {
 				e.printStackTrace();
+				cancel(true);
 			}
 		}
 		
@@ -196,27 +219,38 @@ class CopyGame extends JPanel implements ActionListener {
 		public void updateDB() {
 			//publish(new CopyData("DB Update"));
 			
-			//Format nice sql query
+			//add to db
 			try {
+				//First make a part
 				JSONObject master = new JSONObject();
 				JSONObject dirJson = new JSONObject();
 				JSONObject infoJson = new JSONObject();
-				infoJson.put("uid",GamersClub.uid);
+				JSONObject fileJson = new JSONObject();
+				infoJson.put("name",gameName);
+				infoJson.put("desc",gameDesc);
+				infoJson.put("type",gameType);
+				infoJson.put("picture",newPicPath.toString());
+				infoJson.put("dir",destDir.toString());
+				infoJson.put("uploadName",uploadName);
+				infoJson.put("createDate",gameDate);
+				infoJson.put("addDate",new SimpleDateFormat("MM/dd/yyyy").format(new Date()));
+				infoJson.put("addBy",GamersClub.uid);
 				for (Map.Entry<Path, Path> entry : dirList.entrySet()) {
 					dirJson.put(entry.getKey().toString(),entry.getValue().toString());
 					System.out.println("DirAdding: Key: "+entry.getKey()+" | Value: "+entry.getValue());
 				}
-				JSONObject fileJson = new JSONObject();
+				
 				for (Map.Entry<Path, Path> entry : fileList.entrySet()) {
 					fileJson.put(entry.getKey().toString(),entry.getValue().toString());
 					System.out.println("FileAdding: Key: "+entry.getKey()+" | Value: "+entry.getValue());
 				}
-				master.put("1",dirJson);
-				master.put("2",fileJson);
+				master.put("1",infoJson);
+				master.put("2",dirJson);
+				master.put("3",fileJson);
 				String data = URLEncoder.encode("data", "UTF-8") + "=" + URLEncoder.encode(master.toString(), "UTF-8"); 
 				
 				System.out.println("Buiding done, submitting to website");
-				String response = Globs.webTalk("http://localhost:80/GamersClub/GCTalk.php?mode=addGame",data);
+				String response = Globs.webTalk("mode=addGame",data);
 				
     			if(response.equals("Sucess"))
     				System.out.println("Website Response: Sucess");
@@ -275,6 +309,9 @@ class CopyGame extends JPanel implements ActionListener {
                 Void result = get();
                 System.out.println("Copy operation completed.\n");
                 setBarProgress(100); //sometimes process isn't called to finish up, so...
+                JOptionPane.showMessageDialog(null,"Upload Complete! Press okay to continue");
+                GamersClub.GameBrowser.generate(); //regenerate menu
+                Globs.switchBody("GameBrowser");
             } catch (InterruptedException e) {
                 
             } catch (CancellationException e) {

@@ -5,13 +5,18 @@
  *
  * @author Leon Blakey/Lord.Quackstar
  */
- import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
-import java.net.*;
-import org.json.me.*;
-import java.io.*;
+import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.sql.Connection;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 
 public class Globs {
 	public static Connection conn;
@@ -56,7 +61,7 @@ public class Globs {
 	public static String webTalk(String url,String postVars) {
 		String allLine = "";
 		try {
-			URL ourURL = new URL(url);
+			URL ourURL = new URL("http://localhost:80/GamersClub/GCTalk.php?"+url);
 	    	URLConnection conn = ourURL.openConnection();
 	    	
 	    	conn.setDoOutput(true);
