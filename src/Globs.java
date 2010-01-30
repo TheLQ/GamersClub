@@ -91,7 +91,3 @@ public class Globs {
 	
 	
 }
-
-/*		String userName = "lhsgamersclub";
-        String password = "iU5QG*JzfGak8HE8qT";
-		String url = "jdbc:mysql://SQL09.FREEMYSQL.NET/gamersclub";*/

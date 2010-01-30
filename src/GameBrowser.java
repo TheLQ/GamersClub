@@ -235,20 +235,3 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		}
     }
 }
-
-/*********CODE ARCHIVES**************
- *
- ****************************************
- * Old sql code, dropped in favor of php middeman
- *****************************************
- *ResultSet rs = Globs.conn.createStatement().executeQuery ("SELECT DISTINCT type,`name`,`desc`,`picture`,`download` FROM games");
-			while (rs.next()) {
-				String typeVal = rs.getString ("type");
-				top.add(category = new DefaultMutableTreeNode(typeVal));
-				
-				ResultSet rs2 = Globs.conn.createStatement().executeQuery ("SELECT * FROM games WHERE `type`='"+typeVal+"'");
-				while(rs2.next()) {
-					String nameVal = rs2.getString("name");
-					category.add(new DefaultMutableTreeNode(nameVal));
-				}
-			}*/
