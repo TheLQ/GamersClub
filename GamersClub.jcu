@@ -57,219 +57,51 @@
 				<path>src\tutorial\com\jgoodies\forms\tutorial\util</path>
 			</folderitem>
 			<folderitem>
-				<path>.git</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\hooks</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\info</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\logs</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\logs\refs</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\logs\refs\heads</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\logs\refs\remotes</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\logs\refs\remotes\origin</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\09</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\2d</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\31</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\3f</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\4b</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\50</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\59</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\60</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\65</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\68</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\6d</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\77</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\b7</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\ba</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\df</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\fa</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\info</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\objects\pack</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\refs</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\refs\heads</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\refs\original</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\refs\original\refs</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\refs\original\refs\heads</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\refs\remotes</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\refs\remotes\origin</path>
-			</folderitem>
-			<folderitem>
-				<path>.git\refs\tags</path>
-			</folderitem>
-			<folderitem>
-				<path>classes</path>
-			</folderitem>
-			<folderitem>
-				<path>classes\org</path>
-			</folderitem>
-			<folderitem>
-				<path>classes\org\json</path>
-			</folderitem>
-			<folderitem>
-				<path>classes\org\json\me</path>
-			</folderitem>
-			<folderitem>
-				<path>classes\org\json\me\test</path>
-			</folderitem>
-			<folderitem>
-				<path>classes\org\json\me\util</path>
-			</folderitem>
-			<folderitem>
-				<path>components</path>
-			</folderitem>
-			<folderitem>
 				<path>jars</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com\jgoodies</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com\jgoodies\forms</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com\jgoodies\forms\tutorial</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com\jgoodies\forms\tutorial\basics</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com\jgoodies\forms\tutorial\building</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com\jgoodies\forms\tutorial\factories</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com\jgoodies\forms\tutorial\pitfalls</path>
-			</folderitem>
-			<folderitem>
-				<path>tutorial\com\jgoodies\forms\tutorial\util</path>
 			</folderitem>
 		</project>
 	</projects>
 	<open_files>
 		<docitem>
-			<path>..\..\..\..\Program Files\Xinox Software\JCreatorV4\start.zip</path>
-			<source>false</source>
-			<index>0</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
 			<path>src\Globs.java</path>
 			<source>true</source>
-			<index>1</index>
+			<index>0</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\GamersClub.java</path>
 			<source>true</source>
-			<index>2</index>
+			<index>1</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\MainMenu.java</path>
 			<source>true</source>
-			<index>3</index>
+			<index>2</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\GameBrowser.java</path>
 			<source>true</source>
-			<index>4</index>
+			<index>3</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\AddGame.java</path>
 			<source>true</source>
-			<index>5</index>
+			<index>4</index>
 			<active>true</active>
 		</docitem>
 		<docitem>
 			<path>src\CopyGame.java</path>
 			<source>true</source>
-			<index>6</index>
+			<index>5</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\PasteGame.java</path>
 			<source>true</source>
-			<index>7</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\tutorial\com\jgoodies\forms\tutorial\building\DefaultFormBuilderExample.java</path>
-			<source>true</source>
-			<index>8</index>
+			<index>6</index>
 			<active>false</active>
 		</docitem>
 	</open_files>

@@ -7,6 +7,9 @@
 import javax.swing.*;
 import java.awt.Component;
 import java.awt.event.*;
+import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import javax.swing.border.*;
 import java.nio.file.*;
 import java.util.Date;
@@ -114,7 +117,7 @@ class CopyGame extends JPanel implements ActionListener {
 	/*******************************************************************************************************
 	 * Start File Transfer Area
 	 *******************************************************************************************************/
-	public void config(String gameDir, String picPath, String gameName, String gameDate, String gameDesc, String gameType, String uploadName) {
+	public void config(String gameDir, String picPath, String gameName, Long gameDate, String gameDesc, String gameType, String uploadName) {
 		Globs.switchBody("CopyGame");
 		if(JOptionPane.showConfirmDialog(null, "Do you wish to start? \n NOTE: YOU CANNOT EXIT ONCE THE PROCESS IS STARTED!! \n MAKE SURE YOU HAVE ENOUGH TIME TO COPY THE GAME, ESPICALLY WITH LARGE ONE'S!!")!=JOptionPane.YES_OPTION) {
 			Globs.switchBody("AddGame");
@@ -123,7 +126,7 @@ class CopyGame extends JPanel implements ActionListener {
 		gamePath = Paths.get(gameDir);
 		this.picPath = picPath;
 		this.gameName = gameName;
-		this.gameDate = gameDate;
+		this.gameDate = gameDate.toString();
 		this.gameDesc = gameDesc;
 		this.gameType = gameType;
 		this.uploadName = uploadName;
@@ -131,12 +134,12 @@ class CopyGame extends JPanel implements ActionListener {
 		System.out.println("Starting copy");
 		
 		//Setup and run worker thread
-		operation = new CopyThread(gamePath, obscurePath().toAbsolutePath());
+		operation = new CopyThread(gamePath, obscurePath());
         operation.execute();
 	}
 	
 	public Path obscurePath() {
-		return Paths.get(Long.toString(Math.abs(new Random().nextLong()), 36));
+		return Paths.get(UUID.randomUUID().toString().replace("-","")); //Huge generated string
 	}
 	
 	/******
@@ -173,17 +176,23 @@ class CopyGame extends JPanel implements ActionListener {
             publish(new CopyData("Index Done"));
             
             //Copy Picture
-            System.out.println("Starting to copy picture");
-            newPicPath = destDir.resolve(obscurePath());
             try {
-	            FileChannel in = new FileInputStream(picPath.toString()).getChannel();
-		       	FileChannel out = new FileOutputStream(newPicPath.toString()).getChannel();
-				in.transferTo(0, out.size(), out);
+	            System.out.println("Resizing and Saving Picture");
+				newPicPath = destDir.resolve(obscurePath());
+				ImageIcon resizedImage = new ImageIcon(new ImageIcon(picPath.toString()).getImage());
+				if(resizedImage.getIconHeight() > 300)
+					resizedImage = new ImageIcon(resizedImage.getImage().getScaledInstance(-1, 300,  Image.SCALE_SMOOTH));
+				if(resizedImage.getIconWidth() > 300)
+					resizedImage = new ImageIcon(resizedImage.getImage().getScaledInstance(300, -1,  Image.SCALE_SMOOTH));
+	            BufferedImage resizedBImage = new BufferedImage (resizedImage.getIconWidth(), resizedImage.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+				resizedBImage.getGraphics().drawImage(resizedImage.getImage(), 0 , 0, null);
+				ImageIO.write(resizedBImage, "png",new File(newPicPath.toString())); 
             }
             catch(Exception e) {
             	e.printStackTrace();
-            	cancel(true);
             }
+            
+            //Copy Files
             System.out.println("Initiating walk file tree on path: " +srcDir.toString());
             Files.walkFileTree(srcDir, new CopyFiles());
             
@@ -233,7 +242,7 @@ class CopyGame extends JPanel implements ActionListener {
 				infoJson.put("dir",destDir.toString());
 				infoJson.put("uploadName",uploadName);
 				infoJson.put("createDate",gameDate);
-				infoJson.put("addDate",new SimpleDateFormat("MM/dd/yyyy").format(new Date()));
+				infoJson.put("addDate",System.currentTimeMillis());
 				infoJson.put("addBy",GamersClub.uid);
 				for (Map.Entry<Path, Path> entry : dirList.entrySet()) {
 					dirJson.put(entry.getKey().toString(),entry.getValue().toString());
@@ -328,7 +337,7 @@ class CopyGame extends JPanel implements ActionListener {
         
         /*****This actually where the file get copied. Nested and initiated in the swingworker thread***/
 		class CopyFiles extends SimpleFileVisitor<Path> {
-			Path relativeDir, relativeFile, realDestDir, realDestFile;
+			Path relativeDir, relativeFile, relativeDest, realDestDir, realDestFile;
 			long bytesCopied = 0;
 			
 			@Override
@@ -336,22 +345,9 @@ class CopyGame extends JPanel implements ActionListener {
 			    relativeFile = srcDir.relativize(file); //Obtain relative path from revitalizing gamePath and current file
 			    
 			    //Get obscurified path
-			    int nameCount = (relativeFile.getNameCount()<=1) ? 1 :  relativeFile.getNameCount()-1; //prevent root files from calling parent
-			    Path obscParent = dirList.get(relativeFile.subpath(0,nameCount));
-			    System.out.println("Name Count: "+relativeFile.getNameCount()+" | Relative File: "+relativeFile+" | Parent: "+obscParent);
-			    if(obscParent == null && nameCount != 1) {
-			    	//thats not supposed to happen...
-			    	System.err.println("Can't find parent folder! obscParent is null!");
-			    	cancel(true);
-			    }
-			    Path relativeDest = null;
-			    if(obscParent == null)
-			    	relativeDest = destDir.resolve(obscurePath()); //for root files
-			    else
-			    	relativeDest = obscParent.resolve(obscurePath());
-			    
-			    //add to fileList for
-			    fileList.put(relativeFile,relativeDest);
+			    relativeDest = obscurePath(); //simply drop into root of dest
+			    realDestFile = destDir.resolve(relativeDest);
+			    fileList.put(relativeFile,relativeDest); //add to file list
 			    
 			    realDestFile = destDir.resolve(relativeDest); //Obtain absolute destination file by combining relativeFile and obscParent
 				try {
@@ -397,45 +393,6 @@ class CopyGame extends JPanel implements ActionListener {
 	            }
 	            return FileVisitResult.CONTINUE;
 	       	}
-			
-			@Override
-			public FileVisitResult preVisitDirectory(Path dir) {
-			    relativeDir = srcDir.relativize(dir); //Obtain relative path from revitalizing gamePath and current directory
-			    
-			    //The inital directory is null, so...
-			    if(relativeDir==null) {
-			    	realDestDir = destDir.resolve(relativeDir);
-			    	return FileVisitResult.CONTINUE;
-			    }
-			    	
-			    //Generate destination directory
-			    Path relativeDest = null;
-			    int nameCount = (relativeDir.getNameCount()==1) ? 1 :  relativeDir.getNameCount()-1;
-			    Path obscParent = dirList.get(relativeDir.subpath(0,nameCount));
-			    System.out.println("Name Count: "+relativeDir.getNameCount()+" | Relative Dir: "+relativeDir+" | Parent: "+relativeDir.subpath(0,nameCount));
-			    if(obscParent != null) { //found it
-			    	relativeDest = obscParent.resolve(obscurePath());
-			    	System.out.println("Relative Dir Dest: "+relativeDest);
-			    	dirList.put(relativeDir,relativeDest);
-			    	realDestDir = destDir.resolve(relativeDest); 
-			    	dirList.put(relativeDir,relativeDest);
-			    }
-			    else { //didn't find it, must be in root
-			    	Path obscPath = obscurePath();
-			    	realDestDir = destDir.resolve(obscPath); 
-			    	dirList.put(relativeDir,obscPath);
-			    }
-			    	
-			    //realDestDir = destDir.resolve(relativeDest); //Obtain absolute destination directory by combining destDir and relativeDir
-			    
-			    //Now create remote directory
-			    if(!realDestDir.exists()) {
-				    try { realDestDir.createDirectory(); }
-				    catch(Exception e) { e.printStackTrace(); }
-			    }
-
-			    return FileVisitResult.CONTINUE;
-			}
 		}
     }
     

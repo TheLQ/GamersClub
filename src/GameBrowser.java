@@ -118,6 +118,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 					String name = gameValue.get("name").toString();
 					gameData.put(name,(Map)gameValue);
 					
+					//Make the tree node
 					category.add(new DefaultMutableTreeNode(name));
 					System.out.println("Name: "+name);
 				}
@@ -156,15 +157,6 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
         	
         	//Get resultset
         	Map gameInfo = gameData.get(nodeInfo.toString());
-        	
-        	//setup directory
-		  	String dir = gameInfo.get("dir").toString();
-		   	picPanel.removeAll();
-		   	gameDir = Paths.get(dir);
-		   	if(gameDir.notExists() == true) {
-		   		System.err.println("Game dir does not exist. Dir: "+dir);
-		   		return;
-		   	}
             
             /***Setup desccription pane***/
         	descPanel.removeAll();
@@ -181,7 +173,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		    /***Setup Picture Pane***/
 		    picPanel.removeAll();
 		    JLabel gamePic = new JLabel("",JLabel.CENTER);
-		    Path picPath = gameDir.resolve(gameInfo.get("picture").toString()); 
+		    Path picPath = Paths.get(gameInfo.get("picture").toString()); 
 		    ImageIcon gamePicIcon;
 			if(picPath.exists()!=true) {
 			   	System.out.println("Game provided image not avalible");
@@ -190,17 +182,16 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 			else {
 			   	gamePicIcon = new ImageIcon(picPath.toString());
 			}
-			//overcomplicated way to resize
-			gamePic.setIcon(new ImageIcon(gamePicIcon.getImage().getScaledInstance(300, -1,  Image.SCALE_SMOOTH)));  
+			gamePic.setIcon(gamePicIcon);  
 			picPanel.add(gamePic);
 			//add dates
-			picPanel.add(new JLabel("<HTML><b>Date Added:</b> " + DateFormat.getDateInstance(DateFormat.FULL).format(Long.valueOf(gameInfo.get("addDate").toString().trim())) + "</HTML>"));
+			picPanel.add(new JLabel("<HTML><b>Date Added:</b> " + DateFormat.getDateInstance(DateFormat.FULL).format(Long.valueOf(gameInfo.get("addDate").toString().trim().replace("\\/","/"))) + "</HTML>"));
 			picPanel.add(new JLabel("<HTML><b>Date Game Created:</b> " + DateFormat.getDateInstance(DateFormat.FULL).format(Long.valueOf(gameInfo.get("createDate").toString().trim())) + "</HTML>"));
 			
 			/***Setup Download Pane***/
 			downPanel.removeAll();
 			try {
-				Iterator downJSON = new JSONObject(gameInfo.get("picture").toString()).myHashMap.entrySet().iterator();
+				Iterator downJSON = new JSONObject(gameInfo.get("dirs").toString()).myHashMap.entrySet().iterator();
 				while(downJSON.hasNext()) {
 					Map.Entry currentDir = (Map.Entry)downJSON.next();
 					JButton downButton = new JButton(currentDir.getKey().toString());

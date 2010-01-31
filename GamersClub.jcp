@@ -28,7 +28,7 @@
 		</runtime>
 	</runtimes>
 	<libraries>
-		<library_ref>Req Jars</library_ref>
+		<library_ref>Jars</library_ref>
 	</libraries>
 	<files>
 		<include>
@@ -300,9 +300,6 @@
 				<path>components</path>
 				<dir/>
 			</folderitem>
-			<fileitem>
-				<path>jars\mysql-connector-java-5.1.10-bin.jar</path>
-			</fileitem>
 		</exclude>
 	</files>
 	<tasks/>

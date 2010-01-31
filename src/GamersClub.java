@@ -90,8 +90,10 @@ public class GamersClub extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null,"You are not in the Gamers Club.");
 				System.exit(0);
 			}
-			else
-				System.err.println("Garbage for input, Parsing JSON Failed!");
+			else {
+				JOptionPane.showMessageDialog(null,"<HTML>ERROR: Initial check, Either garbage for input or website dosen't exist!<br>"+e.getMessage()+"</HTML>");
+				System.exit(0);
+			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();

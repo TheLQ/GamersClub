@@ -37,13 +37,20 @@ switch($MODE) {
 	
 	//Is this a gameBrowse tree build request?
 	case "buildTree":
-		$data = array();
-		$typeQuery = mysql_query("SELECT DISTINCT type FROM games");
+		$data = array();		
+		$typeQuery = mysql_query("SELECT DISTINCT type FROM games"); //obtain all game types
 		while($typeResult = mysql_fetch_array($typeQuery)) {
 			$type = $typeResult['type'];
-			$gameQuery = mysql_query("SELECT * FROM games WHERE `type`='$type'");
+			$gameQuery = mysql_query("SELECT * FROM games WHERE `type`='$type'"); //obtain games of type
 			while($gameResult = mysql_fetch_assoc($gameQuery)) {
+				$downQuery = mysql_query("SELECT * FROM dirlist WHERE `gameId`='{$gameResult['counter']}'");
+				$downArray = array();
+				while($downResult = mysql_fetch_array($downQuery)) {
+					$downArray[$downResult['name']] = $downResult['folder'];
+				}
+				$gameResult['dirs'] = $downArray;
 				$data[$type][] = addSlashes(json_encode($gameResult));
+				
 			}
 		}
 		echo json_encode($data);
@@ -52,13 +59,14 @@ switch($MODE) {
 	case "getTypes":
 		$typeQuery = mysql_query("SELECT DISTINCT type FROM games");
 		$type = array();
-		$type[] = "Custom";
+		$type["0 s"] = "Custom";
 		$counter = 0;
 		while($typeResult = mysql_fetch_array($typeQuery)) {
 			$counter++;
 			$type["$counter s"] = $typeResult['type'];
 		}
-		$type[$counter++."s"] = "Select One";
+		$counter++;
+		$type["$counter s"] = "Select One";
 		echo json_encode($type);
 	break;
 	

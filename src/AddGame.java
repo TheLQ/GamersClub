@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.*;
 import java.nio.file.*;
 import java.net.URI;
 import javax.swing.filechooser.*;
@@ -41,7 +40,7 @@ class AddGame extends JPanel implements ActionListener {
         builder.setDefaultDialogBorder();
 
 		//Folder Area
-        builder.appendSeparator("1) Select the folder that the game is in");
+        builder.appendSeparator("Step 1) Select the folder that the game is in");
         builder.append(createBrowse(gameDirPath,"DIR_ONLY"),7);
         builder.nextLine();
 		
@@ -175,7 +174,7 @@ class AddGame extends JPanel implements ActionListener {
 			/***DO IMPORTANT FORM CHECKING***/
 			DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 			formatter.setLenient(false);
-			java.util.Date date = null;
+			Date date = null;
 			File srcDir = new File(gameDirPath.getText());
 			if(gameDirPath.getText().isEmpty()) {
 				System.out.println("Game Dir Path String "+gameDirPath.toString());
@@ -216,12 +215,12 @@ class AddGame extends JPanel implements ActionListener {
 				JOptionPane.showMessageDialog(null,"Upload name not specified!");
 				return;
 			}
-			try { date = (java.util.Date)formatter.parse(gameCreate.getText()); }
+			try { date = (Date)formatter.parse(gameCreate.getText()); }
 			catch (Exception ex) { JOptionPane.showMessageDialog(null,"Must use correct date format! \nError:"+ex.toString()); return;}
-			System.out.println(formatter.format(date).toString());
+			System.out.println(date.toString());
 			/***Form checking done, no errors, start copy***/
 			String type = (typeBox.getSelectedIndex() == typeBox.getItemCount()-1) ? typeCustom.getText() : (String)typeBox.getSelectedItem();
-			GamersClub.CopyGame.config(gameDirPath.getText(),picPath.getText(),gameName.getText(),formatter.format(date).toString(),descPane.getText(),type,uploadName.getText());
+			GamersClub.CopyGame.config(gameDirPath.getText(),picPath.getText(),gameName.getText(),date.getTime(),descPane.getText(),type,uploadName.getText());
 		}
     }
 }

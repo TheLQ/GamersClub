@@ -85,9 +85,5 @@ public class Globs {
 			e.printStackTrace();
 		}
 		return allLine.trim();
-	}
-	
-	
-	
-	
+	}	
 }
