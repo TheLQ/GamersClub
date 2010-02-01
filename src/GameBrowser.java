@@ -47,7 +47,8 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		
 		picPanel.setLayout(new BoxLayout(picPanel,BoxLayout.Y_AXIS));
 		descPanel.setLayout(new BoxLayout(descPanel,BoxLayout.Y_AXIS));
-		downPanel.setLayout(new BoxLayout(downPanel,BoxLayout.Y_AXIS));	
+		downPanel.setLayout(new BoxLayout(downPanel,BoxLayout.Y_AXIS));
+		downPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)); 
 		
 		return this;
 	}
@@ -190,6 +191,11 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 			
 			/***Setup Download Pane***/
 			downPanel.removeAll();
+			
+			JLabel downLabel = new JLabel("Select which type you wish to download: ",JLabel.CENTER);
+			downLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			downPanel.add(downLabel);
+			JPanel buttonList = new JPanel();
 			try {
 				Iterator downJSON = new JSONObject(gameInfo.get("dirs").toString()).myHashMap.entrySet().iterator();
 				while(downJSON.hasNext()) {
@@ -202,8 +208,9 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 							GamersClub.PasteGame.config(e.getActionCommand());
 						}
 					});
-					downPanel.add(downButton);
+					buttonList.add(downButton);
 				}
+				downPanel.add(buttonList);
 			}
 			catch(Exception ex) {
 				ex.printStackTrace();

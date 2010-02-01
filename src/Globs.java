@@ -62,6 +62,7 @@ public class Globs {
 		String allLine = "";
 		try {
 			URL ourURL = new URL("http://localhost:80/GamersClub/GCTalk.php?"+url);
+			System.out.println("Visiting url: http://localhost:80/GamersClub/GCTalk.php?"+url);
 	    	URLConnection conn = ourURL.openConnection();
 	    	
 	    	conn.setDoOutput(true);
@@ -84,6 +85,7 @@ public class Globs {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("Done visiting url");
 		return allLine.trim();
 	}	
 }

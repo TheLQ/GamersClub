@@ -151,7 +151,7 @@ class CopyGame extends JPanel implements ActionListener {
         private Path srcDir, destDir;
         long totalBytes;
         int progress;
-        TreeMap<Path,Path> dirList = new TreeMap<Path,Path>();
+        TreeMap<Path,String> dirList = new TreeMap<Path,String>();
 		TreeMap<Path,Path> fileList = new TreeMap<Path,Path>();
 		Path newPicPath;
         
@@ -244,8 +244,9 @@ class CopyGame extends JPanel implements ActionListener {
 				infoJson.put("createDate",gameDate);
 				infoJson.put("addDate",System.currentTimeMillis());
 				infoJson.put("addBy",GamersClub.uid);
-				for (Map.Entry<Path, Path> entry : dirList.entrySet()) {
-					dirJson.put(entry.getKey().toString(),entry.getValue().toString());
+				infoJson.put("folderSize",totalBytes);
+				for (Map.Entry<Path, String> entry : dirList.entrySet()) {
+					dirJson.put(entry.getKey().toString(),entry.getValue());
 					System.out.println("DirAdding: Key: "+entry.getKey()+" | Value: "+entry.getValue());
 				}
 				
@@ -393,6 +394,14 @@ class CopyGame extends JPanel implements ActionListener {
 	            }
 	            return FileVisitResult.CONTINUE;
 	       	}
+		
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir) {
+			    relativeDir = srcDir.relativize(dir); //Obtain relative path from revitalizing gamePath and current directory
+			   	if(relativeDir != null) //no need to add root
+			    	dirList.put(relativeDir,""); //Add to dirList so PasteGame knows to create the Dirs
+			    return FileVisitResult.CONTINUE;
+			}
 		}
     }
     

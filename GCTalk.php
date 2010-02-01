@@ -4,8 +4,8 @@
  ******/
  
 //connect to database
-mysql_connect("localhost","root","") or die(mysql_error());
-mysql_select_db("GamersClub") or die(mysql_error());
+mysql_connect("localhost","root","") or die("MYSQL ERROR: "+mysql_error());
+mysql_select_db("GamersClub") or die("MYSQL ERROR: "+mysql_error());
 
 if(!isset($_GET['mode']))
 	die('No mode specified or not found');
@@ -15,17 +15,14 @@ switch($MODE) {
 	//Is this trying to see if the user is in gamers club?
 	case "userExists":
 		$user = $_GET['user'];
-		$query = mysql_query("SELECT * FROM users WHERE `username`='$user'") or die(mysql_error());
-		echo mysql_error();
+		$query = mysql_query("SELECT * FROM users WHERE `username`='$user'") or die("MYSQL ERROR: "+mysql_error());
 		$numRows = mysql_num_rows($query);
-		echo mysql_error();
-
 		if($numRows == 0) {
 			//user dosen't exist, return false
 			echo "false";
 		}
 		else {
-			$result = mysql_fetch_array($query) or die(mysql_error());
+			$result = mysql_fetch_array($query);
 			$info = array();
 			$info['name'] = $result['name'];
 			$info['uid'] = $result['counter'];
@@ -38,12 +35,12 @@ switch($MODE) {
 	//Is this a gameBrowse tree build request?
 	case "buildTree":
 		$data = array();		
-		$typeQuery = mysql_query("SELECT DISTINCT type FROM games"); //obtain all game types
+		$typeQuery = mysql_query("SELECT DISTINCT type FROM games") or die("MYSQL ERROR: "+mysql_error()); //obtain all game types
 		while($typeResult = mysql_fetch_array($typeQuery)) {
 			$type = $typeResult['type'];
-			$gameQuery = mysql_query("SELECT * FROM games WHERE `type`='$type'"); //obtain games of type
+			$gameQuery = mysql_query("SELECT * FROM games WHERE `type`='$type'") or die("MYSQL ERROR: "+mysql_error()); //obtain games of type
 			while($gameResult = mysql_fetch_assoc($gameQuery)) {
-				$downQuery = mysql_query("SELECT * FROM dirlist WHERE `gameId`='{$gameResult['counter']}'");
+				$downQuery = mysql_query("SELECT * FROM dirlist WHERE `gameId`='{$gameResult['counter']}'") or die("MYSQL ERROR: "+mysql_error());
 				$downArray = array();
 				while($downResult = mysql_fetch_array($downQuery)) {
 					$downArray[$downResult['name']] = $downResult['folder'];
@@ -57,7 +54,7 @@ switch($MODE) {
 	break;
 	
 	case "getTypes":
-		$typeQuery = mysql_query("SELECT DISTINCT type FROM games");
+		$typeQuery = mysql_query("SELECT DISTINCT type FROM games") or die("MYSQL ERROR: "+mysql_error());
 		$type = array();
 		$type["0 s"] = "Custom";
 		$counter = 0;
@@ -72,15 +69,34 @@ switch($MODE) {
 	
 	//Is this PasteGame wanting a big file list
 	case "makeGameFileList":
-	
-	break;
-	
-	//Is this GameBrowsers's download pane trying to get list of tables
-	case "getDownloadDirs":
-		$game = mysql_real_escape_string($_GET['game']);
+		$folderName = $_GET['folderName'];
 		
-		//simply get a feild from the db
-		$result = mysql_fetch_assoc("SELECT * FROM `games` WHERE `game`='$game'");
+		
+		//Get the folderID of the game folder
+		$folderQuery = mysql_query("SELECT * FROM `dirlist` WHERE `folder`='$folderName'") or die("MYSQL ERROR: "+mysql_error());
+		if(mysql_num_rows($folderQuery) != 1)
+			die("MYSQL Error: Folder matches "+mysql_num_rows($folderQuery)+" folders!");
+		$folderArray = mysql_fetch_assoc($folderQuery);
+		$folderID = $folderArray['counter'];
+		
+		//Now get everything with that folder id
+		$fileQuery = mysql_query("SELECT * FROM `filelist` WHERE `folderID`='$folderID' ORDER BY `type` ASC") or die("MYSQL ERROR: "+mysql_error());
+		$fileArray = array();
+		$dirArray = array();
+		$counter = 0;
+		while($result = mysql_fetch_assoc($fileQuery)) {
+			$counter++;
+			if($result['type'] == "FILE")
+				$fileArray[$result['Dest']] = $result['Source'];
+			else if($result['type'] == "DIR")
+				$dirArray[$counter." s"] = $result['Source'];
+			else
+				die('ERROR: Type field isn\'t FILE or DIR, its '+$result['type']);
+		}
+		$fileArray = json_encode($fileArray);
+		$dirArray = json_encode($dirArray);
+		$endArray = array("o1" => $fileArray, "o2" => $dirArray, "o3" => $folderArray['byteSize']);
+		echo json_encode($endArray);
 	break;
 	
 	//Is this trying to add a game?
@@ -118,10 +134,11 @@ switch($MODE) {
 		$gameId = mysql_insert_id();
 		
 		//Insert folder data
-		mysql_query(sprintf("INSERT INTO dirlist VALUES (NULL,'%s','%s','%s')",
+		mysql_query(sprintf("INSERT INTO dirlist VALUES (NULL,'%s','%s','%s','%s')",
 			mysql_real_escape_string($infoJson['uploadName']),
 			mysql_real_escape_string($infoJson['dir']),
-			$gameId))or die("MYSQL ERROR: ".mysql_error());
+			mysql_real_escape_string($gameId),
+			mysql_real_escape_string($infoJson['folderSize'])))or die("MYSQL ERROR: ".mysql_error());
 		
 		//Insert File Data
 		$values = "";
@@ -134,7 +151,7 @@ switch($MODE) {
 		}
 		
 		$values = substr($values,0,-1);
-		mysql_query("INSERT INTO fileList VALUES $values") or die("ERROR: ".mysql_error());
+		mysql_query("INSERT INTO fileList VALUES $values") or die("MYSQL ERROR: "+mysql_error());
 		
 		echo "Sucess";
 	break;

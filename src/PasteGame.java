@@ -26,7 +26,6 @@ import com.l2fprod.common.swing.JDirectoryChooser;
 class PasteGame extends JPanel implements ActionListener {
 	JLabel copyPLabel, dbPLabel; //all process labels
 	JLabel taskStatusLabel,dirLocations; //progress bar label
-	Path gamePath, userPath;
 	public JProgressBar progressBar;
 	private CopyThread operation;
 	
@@ -121,7 +120,7 @@ class PasteGame extends JPanel implements ActionListener {
 			return;
 		}
 		String gameDest = chooser.getSelectedFile().getAbsolutePath();
-		System.out.println("Dialog Selection: " + gamePath);
+		System.out.println("Dialog Selection: " + gameDest);
 		
 		if(JOptionPane.showConfirmDialog(null, "Do you wish to start? \n NOTE: YOU CANNOT EXIT ONCE THE PROCESS IS STARTED!! \n MAKE SURE YOU HAVE ENOUGH TIME TO COPY THE GAME, ESPICALLY WITH LARGE ONE'S!!")!=JOptionPane.YES_OPTION) {
 			Globs.switchBody("GameBrowser");
@@ -148,10 +147,11 @@ class PasteGame extends JPanel implements ActionListener {
         private Path srcDir, destDir;
         long totalBytes;
         int progress,downNum;
-        TreeMap<Path,Path> dirList = new TreeMap<Path,Path>();
-		TreeMap<Path,Path> fileList = new TreeMap<Path,Path>();
+        Hashtable dirList = new Hashtable();
+		Hashtable fileList = new Hashtable();
 		Path newPicPath;
 		String gameName;
+		long bytesCopied = 0;
         
         CopyThread(String gameSrc, String gameDest) {
 			this.srcDir = Paths.get(gameSrc);
@@ -170,42 +170,77 @@ class PasteGame extends JPanel implements ActionListener {
             //Obtain File list
             System.out.println("Fetching all games from db");
             publish(new CopyData("dbfetch"));
-            String response = Globs.webTalk("mode=makeGameFileList&game=");
+            String response = Globs.webTalk("mode=makeGameFileList&folderName="+srcDir.toString());
             try {
-            	Iterator dbIter = new JSONObject(response).myHashMap.entrySet().iterator(); 
+            	Hashtable responseJSON = new JSONObject(response).myHashMap;
+            	fileList = new JSONObject(responseJSON.get("o1").toString()).myHashMap;
+            	dirList  = new JSONObject(responseJSON.get("o2").toString()).myHashMap;
+            	totalBytes = Long.parseLong(responseJSON.get("o3").toString());
             }
             catch(Exception e) {
             	e.printStackTrace();
+            	cancel(true);
             }
             
-            
-            
-            publish(new CopyData("Index Done"));
-            
-            //Start to copy files
-            System.out.println("Initiating walk file tree on path: " +srcDir.toString());
-            Files.walkFileTree(srcDir, new CopyFiles());
-            
-            //Update to db
-            publish(new CopyData("DB Update"));
-            updateDB();
-            
-            return null;
+            //Copy files by iterating over table
+            System.out.println("Initiating file copy on path: " +srcDir.toString());
+         	copyFiles();
+         	
+         	return null;
         }
 		
 		/***Copy files obtained from db***/
-		
-		/***Update to DB***/
-		public void updateDB() {
-			//publish(new CopyData("DB Update"));
-			
-			//add to db
+		public void copyFiles() {
 			try {
+				//First need to create directories
+				Iterator dirItr = dirList.entrySet().iterator();
+				while(dirItr.hasNext()) {
+					Map.Entry<String, String> currentKey = (Map.Entry<String, String>)dirItr.next();
+					Path dir = destDir.resolve(Paths.get(currentKey.getValue().toString()));
+					System.out.println("Creating dir path: "+dir.toString());
+					Files.createDirectories(dir); //recusivley create dirs
+				}
+				
+				//Now can copy files
+				Iterator fileItr = fileList.entrySet().iterator();
+				
+				while(fileItr.hasNext()) {
+					Map.Entry currentFile = (Map.Entry)fileItr.next();
+					Path relativeSrcFile = srcDir.resolve(Paths.get(currentFile.getKey().toString()));
+					Path relativeDestFile = Paths.get(currentFile.getValue().toString());
+					Path realDestFile = destDir.resolve(relativeDestFile);
+					
+					//Copy the file
+					FileChannel in = new FileInputStream(relativeSrcFile.toString()).getChannel();
+	        		FileChannel out = new FileOutputStream(realDestFile.toString()).getChannel();
+			       	long size = in.size();
+			       	long presize = 0;
+			       	long position = 0;
+			       
+			       	while (position < size) {
+				      	position += in.transferTo(position, PROGRESS_CHECKPOINT, out);
+				       		
+				       	//transfer of progress data complete, calculate info
+				       	bytesCopied += out.size() - presize;
+				       	presize = out.size();
+				       	progress = (int)(100*((float)bytesCopied / (float)totalBytes));
+	                    CopyData current = new CopyData(relativeSrcFile,realDestFile,getKiloBytes(bytesCopied));
+	                    setProgress(progress);
+	                    publish(current);
+					}
+				}
 			}
 			catch(Exception e) {
+				System.out.println("------------------ERROR-----------------");
+				System.out.println("Progress: " +progress+ " | Bytes Copied: "+bytesCopied+" | Bytes Total: "+totalBytes+" | Bytes Divided: "+(int)((100*(float)bytesCopied / totalBytes)));
 				e.printStackTrace();
+				System.out.println("--------------END ERROR-----------------");
+	                    	
+	            //kill to prevent runaway erros
+	            cancel(true);
 			}
 		}
+		
 		
 		
         // process copy task progress data in the event dispatch thread
@@ -221,16 +256,7 @@ class PasteGame extends JPanel implements ActionListener {
             		dirLocations.setText("<HTML><h4>Source Directory: "+srcDir.toString()+"<br>Target Directory: "+destDir.toString()+"</HTML>");
             		return;
             	}
-            	else if(d.type.equals("Index Done")) {
-            		currentTask(2);
-            		return;
-            	}
-            	else if(d.type.equals("DB Update")) {
-            		currentTask(3);
-            		setBarProgress(100);
-            		return;
-            	}
-                if (d.kiloBytesCopied > update.kiloBytesCopied) {
+                if (d.kiloBytesCopied >= update.kiloBytesCopied) {
                     update = d;
                 }
             }
@@ -238,11 +264,10 @@ class PasteGame extends JPanel implements ActionListener {
             String progressNote =  "Source File:  " + srcDir.relativize(update.srcFilePath).toString()+
             						"<p>Destination File:  "+destDir.relativize(update.destFilePath).toString()+
               						"<p>" + update.kiloBytesCopied + " of " + getKiloBytes(totalBytes) + " kb copied.";
-            
-            //System.out.println(progressNote);  
             currentTask(2);
-            setTaskStatus(progressNote);
-            setBarProgress(progress);
+	        setTaskStatus(progressNote);
+	        setBarProgress(progress);
+            //System.out.println(progressNote);  
         }
         
         // perform final updates in the event dispatch thread
@@ -268,118 +293,6 @@ class PasteGame extends JPanel implements ActionListener {
         private long getKiloBytes(long totalBytes) {
             return Math.round(totalBytes / 1024);
         }
-        
-        /*****This actually where the file get copied. Nested and initiated in the swingworker thread***/
-		class CopyFiles extends SimpleFileVisitor<Path> {
-			Path relativeDir, relativeFile, realDestDir, realDestFile;
-			long bytesCopied = 0;
-			
-			@Override
-			public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) {
-			    relativeFile = srcDir.relativize(file); //Obtain relative path from revitalizing gamePath and current file
-			    
-			    //Get obscurified path
-			    int nameCount = (relativeFile.getNameCount()<=1) ? 1 :  relativeFile.getNameCount()-1; //prevent root files from calling parent
-			    Path obscParent = dirList.get(relativeFile.subpath(0,nameCount));
-			    System.out.println("Name Count: "+relativeFile.getNameCount()+" | Relative File: "+relativeFile+" | Parent: "+obscParent);
-			    if(obscParent == null && nameCount != 1) {
-			    	//thats not supposed to happen...
-			    	System.err.println("Can't find parent folder! obscParent is null!");
-			    	cancel(true);
-			    }
-			    Path relativeDest = null;
-			    if(obscParent == null)
-			    	relativeDest = destDir.resolve(obscurePath()); //for root files
-			    else
-			    	relativeDest = obscParent.resolve(obscurePath());
-			    
-			    //add to fileList for
-			    fileList.put(relativeFile,relativeDest);
-			    
-			    realDestFile = destDir.resolve(relativeDest); //Obtain absolute destination file by combining relativeFile and obscParent
-				try {
-					FileChannel in = new FileInputStream(file.toString()).getChannel();
-	        		FileChannel out = new FileOutputStream(realDestFile.toString()).getChannel();
-			       	long size = in.size();
-			       	long presize = 0;
-			       	long position = 0;
-			       
-			       	while (position < size) {
-				      	position += in.transferTo(position, PROGRESS_CHECKPOINT, out);
-				       		
-				       	//transfer of progress data complete, calculate info
-				       	bytesCopied += out.size() - presize;
-				       	presize = out.size();
-				       	progress = (int)(100*((float)bytesCopied / (float)totalBytes));
-	                    CopyData current = new CopyData(file,realDestFile,getKiloBytes(bytesCopied));
-	                    try {
-	                       	setProgress(progress);
-	                    }
-	                    catch(Exception e) {
-	                       	System.out.println("------------------ERROR-----------------");
-				            System.out.println("Progress: " +progress+ " | Bytes Copied: "+bytesCopied+" | Bytes Total: "+totalBytes+" | Bytes Divided: "+(int)((100*(float)bytesCopied / totalBytes)));
-				            e.printStackTrace();
-				            System.out.println("--------------END ERROR-----------------");
-	                    	
-	                    	//kill to prevent runaway erros
-	                    	cancel(true);
-	                    }
-	                              
-	                    // publish current progress data for copy task
-	                    publish(current);
-			    	}
-			        out.close();
-			        in.close();
-				}
-				catch (FileNotFoundException e) {
-	               	System.out.println("ERROR IN COPYING FILE: "+e.getMessage());
-	               	e.printStackTrace();
-	            } 
-	            catch (IOException e) {
-	            	e.printStackTrace();
-	            }
-	            return FileVisitResult.CONTINUE;
-	       	}
-			
-			@Override
-			public FileVisitResult preVisitDirectory(Path dir) {
-			    relativeDir = srcDir.relativize(dir); //Obtain relative path from revitalizing gamePath and current directory
-			    
-			    //The inital directory is null, so...
-			    if(relativeDir==null) {
-			    	realDestDir = destDir.resolve(relativeDir);
-			    	return FileVisitResult.CONTINUE;
-			    }
-			    	
-			    //Generate destination directory
-			    Path relativeDest = null;
-			    int nameCount = (relativeDir.getNameCount()==1) ? 1 :  relativeDir.getNameCount()-1;
-			    Path obscParent = dirList.get(relativeDir.subpath(0,nameCount));
-			    System.out.println("Name Count: "+relativeDir.getNameCount()+" | Relative Dir: "+relativeDir+" | Parent: "+relativeDir.subpath(0,nameCount));
-			    if(obscParent != null) { //found it
-			    	relativeDest = obscParent.resolve(obscurePath());
-			    	System.out.println("Relative Dir Dest: "+relativeDest);
-			    	dirList.put(relativeDir,relativeDest);
-			    	realDestDir = destDir.resolve(relativeDest); 
-			    	dirList.put(relativeDir,relativeDest);
-			    }
-			    else { //didn't find it, must be in root
-			    	Path obscPath = obscurePath();
-			    	realDestDir = destDir.resolve(obscPath); 
-			    	dirList.put(relativeDir,obscPath);
-			    }
-			    	
-			    //realDestDir = destDir.resolve(relativeDest); //Obtain absolute destination directory by combining destDir and relativeDir
-			    
-			    //Now create remote directory
-			    if(!realDestDir.exists()) {
-				    try { realDestDir.createDirectory(); }
-				    catch(Exception e) { e.printStackTrace(); }
-			    }
-
-			    return FileVisitResult.CONTINUE;
-			}
-		}
     }
     
     /*****This is the container class for the current file progress****/
@@ -388,11 +301,11 @@ class PasteGame extends JPanel implements ActionListener {
         public long kiloBytesCopied;
         public String type;
         
-        CopyData(String type) {
+        public CopyData(String type) {
         	this.type = type;        		
         }
         
-        CopyData(Path srcFilePath, Path destFilePath, long kiloBytesCopied) {
+        public CopyData(Path srcFilePath, Path destFilePath, long kiloBytesCopied) {
         	this.destFilePath = destFilePath;
             this.srcFilePath = srcFilePath;
             this.kiloBytesCopied = kiloBytesCopied;
