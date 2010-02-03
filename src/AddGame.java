@@ -215,7 +215,7 @@ class AddGame extends JPanel implements ActionListener {
 				JOptionPane.showMessageDialog(null,"Upload name not specified!");
 				return;
 			}
-			try { date = (Date)formatter.parse(gameCreate.getText()); }
+			try { date = formatter.parse(gameCreate.getText()); }
 			catch (Exception ex) { JOptionPane.showMessageDialog(null,"Must use correct date format! \nError:"+ex.toString()); return;}
 			System.out.println(date.toString());
 			/***Form checking done, no errors, start copy***/
