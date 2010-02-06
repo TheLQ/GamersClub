@@ -90,7 +90,7 @@
 			<path>src\AddGame.java</path>
 			<source>true</source>
 			<index>4</index>
-			<active>true</active>
+			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\CopyGame.java</path>
@@ -103,6 +103,18 @@
 			<source>true</source>
 			<index>6</index>
 			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>TODO.txt</path>
+			<source>true</source>
+			<index>7</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>src\build.xml</path>
+			<source>true</source>
+			<index>8</index>
+			<active>true</active>
 		</docitem>
 	</open_files>
 	<build_files>

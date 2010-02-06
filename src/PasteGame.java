@@ -277,7 +277,7 @@ class PasteGame extends JPanel implements ActionListener {
                 Void result = get();
                 System.out.println("Copy operation completed.\n");
                 setBarProgress(100); //sometimes process isn't called to finish up, so...
-                JOptionPane.showMessageDialog(null,"Upload Complete! Press okay to continue");
+                JOptionPane.showMessageDialog(null,"Download Complete! Press okay to continue");
                 GamersClub.GameBrowser.generate(); //regenerate menu
                 Globs.switchBody("GameBrowser");
             } catch (InterruptedException e) {

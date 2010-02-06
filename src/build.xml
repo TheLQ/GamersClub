@@ -1,35 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<project name="GamersClub" default="compile" basedir=".">
-	<description>
-		Builds the Gamers Club Distrbution Service
-	</description>
+<?xml version="1.0" encoding="utf-8"?>
+<project name="GamersClub" default="compile" basedir="..">
+	<description>Builds the Gamers Club Distrbution Service</description>
 	<!-- set global properties for this build -->
-	<property name="src" location="src"/>
-	<property name="build" location="classes"/>
-	<property name="dist"  location="."/>
-	<property name="name"  location="GamersClub"/>
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="comp" location="classes" />
+	<property name="dist" location="jars" />
+	<property name="name" location="GamersClub" />
 	
-	<target name="compile" description="Compile the source code" >
-		<echo message="Compiling Source code"/>
+	<target name="compile" description="Compile the source code">
+		<delete dir="${comp}" />
+		<echo>Compiling Source code
+		Source: ${src}
+		Build: ${build}
+		</echo>
 		<!-- Create the build directory structure used by compile -->
-		<mkdir dir="${build}"/>
+		<mkdir dir="${comp}" />
 		<!-- Build the java code from ${src} into ${build} -->
-		<javac srcdir="${src}" destdir="${build}"/>
+		<javac srcdir="${src}" destdir="${comp}" target="1.7"/>
 	</target>
+  
+	<target name="deploy" depends="compile" description="generate the distribution">
+		<copy todir="${comp}">
+			<fileset dir="req-files"/>
+		</copy>
 
-	<target name="deploy" depends="compile"
-		description="generate the distribution" >
 		<!-- Create the distribution directory -->
-		<mkdir dir="${dist}/lib"/>
+		<mkdir dir="${build}" />
 		<!-- Put everything in ${build} into the ${name}.jar file -->
-		<jar jarfile="${dist}/lib/${name}.jar" basedir="${build}"/>
+		<jar jarfile="${build}/GamersClub.jar" basedir="${comp}">
+			<zipfileset src="jars/l2fprod-common-directorychooser.jar" includes="**/*.*"/>
+			<zipfileset src="jars/swingx-1.6.jar" includes="**/*.*"/>
+			<zipfileset src="jars/forms-1.3.0.jar" includes="**/*.*"/>
+			<zipfileset src="jars/looks-2.3.1.jar" includes="**/*.*"/>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Main-Class" value="GamersClub"/>
+				<attribute name="SplashScreen-Image" value="SplashScreen.png"/>
+				<section name="common">
+					<!--<attribute name="Specification-Title" value="Example" />-->
+				</section>
+			</manifest>
+		</jar>
 	</target>
-
-	<target name="clean"
-			description="clean up" >
+  
+	<target name="clean" description="clean up">
 		<!-- Delete the ${build} and ${dist} directory trees -->
-		<delete dir="${build}"/>
-		<delete dir="${dist}"/>
+		<delete dir="${class}" />
+		<delete dir="${dist}" />
+	</target>
+	
+	<target name="test" description="clean up">
+	    <echo>Current Dir: ${basedir}</echo>
 	</target>
 </project>
+

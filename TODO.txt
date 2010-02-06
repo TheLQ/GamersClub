@@ -1,11 +1,10 @@
 Things to do and that aren't finished
 Last updated January 29, 2010 at 7:24 PM
 
-Finish PasteGame
-Change Download Feild in DB to JSON
-Complete download in GameBrowser
+Get ANT script to work
+-Jars need to be included
+
 Make GameBrowser look nice
-Auto-shrink (or expand) game pics
 Make Sure debug messages show up immediatly
 Clean up Import messages
 -Remove Generics from CopyGame and PasteGame for parser to work
@@ -20,8 +19,6 @@ Make Options
 -Say not much here yet
 Setup Admin System
 -Privs, button hiding, admin console
-Merge obscured dirs into 1 folder
-Splash screen with boot progress
 DB talk on seperate thread
 Encrypted DB talk - low priority
 Java 1.6 compatability - HUGE PRIORITY
