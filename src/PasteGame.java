@@ -134,15 +134,11 @@ class PasteGame extends JPanel implements ActionListener {
         operation.execute();
 	}
 	
-	public Path obscurePath() {
-		return Paths.get(Long.toString(Math.abs(new Random().nextLong()), 36));
-	}
-	
 	/******
 	 * Needed Classes For Copying
 	 * This Class simply initializes CopyFile class, but does so in the background thread
 	 *****/
-    class CopyThread extends SwingWorker<Void, CopyData> {        
+    class CopyThread extends SwingWorker<Void, Globs.CopyData> {        
         private static final int PROGRESS_CHECKPOINT = 100000;
         private Path srcDir, destDir;
         long totalBytes;
@@ -169,8 +165,8 @@ class PasteGame extends JPanel implements ActionListener {
             
             //Obtain File list
             System.out.println("Fetching all games from db");
-            publish(new CopyData("dbfetch"));
-            String response = Globs.webTalk("mode=makeGameFileList&folderName="+srcDir.toString());
+            publish(new Globs.CopyData("dbfetch"));
+            String response = Globs.webTalk("mode=makeGameFileList&folderName="+srcDir.toString(),null,null);
             try {
             	Hashtable responseJSON = new JSONObject(response).myHashMap;
             	fileList = new JSONObject(responseJSON.get("o1").toString()).myHashMap;
@@ -224,7 +220,7 @@ class PasteGame extends JPanel implements ActionListener {
 				       	bytesCopied += out.size() - presize;
 				       	presize = out.size();
 				       	progress = (int)(100*((float)bytesCopied / (float)totalBytes));
-	                    CopyData current = new CopyData(relativeSrcFile,realDestFile,getKiloBytes(bytesCopied));
+	                    Globs.CopyData current = new Globs.CopyData(relativeSrcFile,realDestFile,getKiloBytes(bytesCopied));
 	                    setProgress(progress);
 	                    publish(current);
 					}
@@ -245,10 +241,10 @@ class PasteGame extends JPanel implements ActionListener {
 		
         // process copy task progress data in the event dispatch thread
         @Override
-        public void process(List<CopyData> data) {
+        public void process(List<Globs.CopyData> data) {
             if(isCancelled()) { return; }
-            CopyData update  = new CopyData(null,null, 0);
-            for (CopyData d : data) {
+            Globs.CopyData update  = new Globs.CopyData(null,null, 0);
+            for (Globs.CopyData d : data) {
                 // progress updates may be batched, so get the most recent
                 if(d.type.equals("dbfetch")) {
             		currentTask(1);
@@ -292,24 +288,6 @@ class PasteGame extends JPanel implements ActionListener {
         //Format the KB to a nice value
         private long getKiloBytes(long totalBytes) {
             return Math.round(totalBytes / 1024);
-        }
-    }
-    
-    /*****This is the container class for the current file progress****/
-    class CopyData {
-        public Path srcFilePath, destFilePath;
-        public long kiloBytesCopied;
-        public String type;
-        
-        public CopyData(String type) {
-        	this.type = type;        		
-        }
-        
-        public CopyData(Path srcFilePath, Path destFilePath, long kiloBytesCopied) {
-        	this.destFilePath = destFilePath;
-            this.srcFilePath = srcFilePath;
-            this.kiloBytesCopied = kiloBytesCopied;
-            this.type = "";
         }
     }
 }

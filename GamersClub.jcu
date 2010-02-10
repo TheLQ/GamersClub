@@ -27,37 +27,34 @@
 				<path>src\org\json\me\util</path>
 			</folderitem>
 			<folderitem>
-				<path>src\tutorial</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com\jgoodies</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com\jgoodies\forms</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com\jgoodies\forms\tutorial</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com\jgoodies\forms\tutorial\basics</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com\jgoodies\forms\tutorial\building</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com\jgoodies\forms\tutorial\factories</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com\jgoodies\forms\tutorial\pitfalls</path>
-			</folderitem>
-			<folderitem>
-				<path>src\tutorial\com\jgoodies\forms\tutorial\util</path>
-			</folderitem>
-			<folderitem>
 				<path>jars</path>
+			</folderitem>
+			<folderitem>
+				<path>com</path>
+			</folderitem>
+			<folderitem>
+				<path>com\jgoodies</path>
+			</folderitem>
+			<folderitem>
+				<path>com\jgoodies\forms</path>
+			</folderitem>
+			<folderitem>
+				<path>com\jgoodies\forms\tutorial</path>
+			</folderitem>
+			<folderitem>
+				<path>com\jgoodies\forms\tutorial\basics</path>
+			</folderitem>
+			<folderitem>
+				<path>com\jgoodies\forms\tutorial\building</path>
+			</folderitem>
+			<folderitem>
+				<path>com\jgoodies\forms\tutorial\factories</path>
+			</folderitem>
+			<folderitem>
+				<path>com\jgoodies\forms\tutorial\pitfalls</path>
+			</folderitem>
+			<folderitem>
+				<path>com\jgoodies\forms\tutorial\util</path>
 			</folderitem>
 		</project>
 	</projects>
@@ -105,16 +102,22 @@
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>TODO.txt</path>
+			<path>src\Profile.java</path>
 			<source>true</source>
 			<index>7</index>
+			<active>true</active>
+		</docitem>
+		<docitem>
+			<path>TODO.txt</path>
+			<source>true</source>
+			<index>8</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\build.xml</path>
 			<source>true</source>
-			<index>8</index>
-			<active>true</active>
+			<index>9</index>
+			<active>false</active>
 		</docitem>
 	</open_files>
 	<build_files>

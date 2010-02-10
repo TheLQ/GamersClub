@@ -8,9 +8,6 @@ Make GameBrowser look nice
 Make Sure debug messages show up immediatly
 Clean up Import messages
 -Remove Generics from CopyGame and PasteGame for parser to work
-Make Profile - Low Priority
--Upload Avatar
--Info Fields: Real Name, Gamers Tag (aka alias), grade, birthday, favorite games, best at
 Make PeopleBrowser
 -Search list, list looks like facebook chat
 -Profile looks like phpBB2

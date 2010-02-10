@@ -14,12 +14,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Connection;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.ImageIcon;
+import java.awt.Image;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 public class Globs {
-	public static Connection conn;
 	public static JComponent setSize(JComponent comp, int height, int width) {
      	Dimension size = comp.getPreferredSize();
      	if(height!=0) {
@@ -54,11 +57,7 @@ public class Globs {
 
 	}
 	
-	public static String webTalk(String url) {
-		return webTalk(url,null);
-	}
-	
-	public static String webTalk(String url,String postVars) {
+	public static String webTalk(String url,String postVars,String lookFor) {
 		String allLine = "";
 		try {
 			URL ourURL = new URL("http://localhost:80/GamersClub/GCTalk.php?"+url);
@@ -81,11 +80,46 @@ public class Globs {
 	    	if(postVars != null)
 	    		wr.close();
 	    	rd.close();
+	    	allLine = allLine.trim();
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		if(lookFor != null && !lookFor.equals(allLine)) {
+			return "ERROR /n "+allLine;
+		}
+		
 		System.out.println("Done visiting url");
 		return allLine.trim();
-	}	
+	}
+	
+	public static ImageIcon resizePic(String iconLoc,int width,int height) {
+		ImageIcon resizedImage = new ImageIcon(iconLoc);
+		if(resizedImage.getIconHeight() > height)
+			resizedImage = new ImageIcon(resizedImage.getImage().getScaledInstance(-1, height,  Image.SCALE_SMOOTH));
+		if(resizedImage.getIconWidth() > width)
+			resizedImage = new ImageIcon(resizedImage.getImage().getScaledInstance(width, -1,  Image.SCALE_SMOOTH));
+		return resizedImage;
+	}
+	public static Path obscurePath() {
+		return Paths.get(UUID.randomUUID().toString().replace("-","")); //Huge generated string
+	}
+	
+	public static class CopyData {
+        public Path srcFilePath, destFilePath;
+        public long kiloBytesCopied;
+        public String type;
+        
+        public CopyData(String type) {
+        	this.type = type;        		
+        }
+        
+        public CopyData(Path srcFilePath, Path destFilePath, long kiloBytesCopied) {
+        	this.destFilePath = destFilePath;
+            this.srcFilePath = srcFilePath;
+            this.kiloBytesCopied = kiloBytesCopied;
+            this.type = "";
+        }
+    }
 }

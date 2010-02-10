@@ -52,7 +52,7 @@ class AddGame extends JPanel implements ActionListener {
 		
 		//Generate TypePanel for Game Section
 		JPanel typePanel = new JPanel();
-		String response = Globs.webTalk("mode=getTypes");
+		String response = Globs.webTalk("mode=getTypes",null,null);
 		System.out.println("Response: "+response);
 		Object[] typeArray;
 		try { 

@@ -35,12 +35,11 @@ public class GamersClub extends JFrame implements ActionListener {
     public static AddGame AddGame = new AddGame();
     public static CopyGame CopyGame = new CopyGame();
     public static PasteGame PasteGame = new PasteGame();
+    public static Profile Profile = new Profile();
     
     /***Static User Info***/
-    public static String userRealName;
-    public static String uid;
+    public static String username, uid, realName, gamersTag, grade, bestAt, favGame, avatar, desc, userid;
     public static Boolean admin;
-    public static String userName;
     
 	public GamersClub () {
 		/***Pre init, make error logs so future commands are happy***/
@@ -73,16 +72,24 @@ public class GamersClub extends JFrame implements ActionListener {
        	
        	/***Check if user exists***/
        	System.out.println("System user account: "+System.getProperty("user.name")+", checking with database");
-		String response = Globs.webTalk("mode=userExists&user="+System.getProperty("user.name"));
+		String response = Globs.webTalk("mode=userExists&user="+System.getProperty("user.name"),null,null);
 		JSONObject dbInfo = null;
 		System.out.println("Response: "+response);
 		try{
 			dbInfo = new JSONObject(response);
-			uid = (String)dbInfo.get("uid");
-			userRealName = (String)dbInfo.get("name");
-			userName = (String)dbInfo.get("username");
+			uid = (String)dbInfo.get("counter");
+			username = (String)dbInfo.get("username");
 			admin = (Integer.parseInt((String)dbInfo.get("admin")) == 1) ? true : false;
-			System.out.println("Name: "+userName+" | Real Name: "+userRealName+" | UID: "+uid+" | Is Admin: "+admin);
+			avatar = (dbInfo.get("avatar") == JSONObject.NULL) ? "NULL" : (String)dbInfo.get("avatar");
+			realName = (String)dbInfo.get("name");
+			gamersTag = (String)dbInfo.get("gamersTag");
+			grade = (String)dbInfo.get("gradeNum");
+			bestAt = (String)dbInfo.get("bestAt");
+			favGame = (String)dbInfo.get("favGames");
+			avatar = (String)dbInfo.get("avatar");
+			desc = (String)dbInfo.get("desc");
+
+			System.out.println("User: "+username+" | Real Name: "+realName+" | UID: "+uid+" | Is Admin: "+admin);
 		}
 		catch(JSONException e) {
 			//must of false or garbage
@@ -125,6 +132,7 @@ public class GamersClub extends JFrame implements ActionListener {
 		bodyPanel.add(AddGame.generate(),"AddGame");
 		bodyPanel.add(CopyGame.generate(),"CopyGame");
 		bodyPanel.add(PasteGame.generate(),"PasteGame");
+		bodyPanel.add(Profile.generate(),"Profile");
 		CardLayout cl = (CardLayout)(bodyPanel.getLayout());
 	    cl.show(bodyPanel, "MainMenu");
 		bodyPanel.setMinimumSize(new Dimension(600,500));

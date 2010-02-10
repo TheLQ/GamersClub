@@ -134,19 +134,16 @@ class CopyGame extends JPanel implements ActionListener {
 		System.out.println("Starting copy");
 		
 		//Setup and run worker thread
-		operation = new CopyThread(gamePath, obscurePath());
+		operation = new CopyThread(gamePath, Globs.obscurePath());
         operation.execute();
 	}
 	
-	public Path obscurePath() {
-		return Paths.get(UUID.randomUUID().toString().replace("-","")); //Huge generated string
-	}
 	
 	/******
 	 * Needed Classes For Copying
 	 * This Class simply initializes CopyFile class, but does so in the background thread
 	 *****/
-    class CopyThread extends SwingWorker<Void, CopyData> {        
+    class CopyThread extends SwingWorker<Void, Globs.CopyData> {        
         private static final int PROGRESS_CHECKPOINT = 100000;
         private Path srcDir, destDir;
         long totalBytes;
@@ -171,19 +168,15 @@ class CopyGame extends JPanel implements ActionListener {
             
             //Calculate total data 
             System.out.println("Starting Directory Transverse");
-            publish(new CopyData("index"));
+            publish(new Globs.CopyData("index"));
             traverse(srcDir);
-            publish(new CopyData("Index Done"));
+            publish(new Globs.CopyData("Index Done"));
             
             //Copy Picture
             try {
 	            System.out.println("Resizing and Saving Picture");
-				newPicPath = destDir.resolve(obscurePath());
-				ImageIcon resizedImage = new ImageIcon(new ImageIcon(picPath.toString()).getImage());
-				if(resizedImage.getIconHeight() > 300)
-					resizedImage = new ImageIcon(resizedImage.getImage().getScaledInstance(-1, 300,  Image.SCALE_SMOOTH));
-				if(resizedImage.getIconWidth() > 300)
-					resizedImage = new ImageIcon(resizedImage.getImage().getScaledInstance(300, -1,  Image.SCALE_SMOOTH));
+				newPicPath = destDir.resolve(Globs.obscurePath());
+				ImageIcon resizedImage = Globs.resizePic(picPath.toString(),300,300);
 	            BufferedImage resizedBImage = new BufferedImage (resizedImage.getIconWidth(), resizedImage.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 				resizedBImage.getGraphics().drawImage(resizedImage.getImage(), 0 , 0, null);
 				ImageIO.write(resizedBImage, "png",new File(newPicPath.toString())); 
@@ -197,7 +190,7 @@ class CopyGame extends JPanel implements ActionListener {
             Files.walkFileTree(srcDir, new CopyFiles());
             
             //Update to db
-            publish(new CopyData("DB Update"));
+            publish(new Globs.CopyData("DB Update"));
             updateDB();
             
             return null;
@@ -205,7 +198,7 @@ class CopyGame extends JPanel implements ActionListener {
 		
 		//Custom method to recursivly obtain files
 		public final void traverse(Path f ) {
-			publish(new CopyData("index"));
+			publish(new Globs.CopyData("index"));
 			try {
 				//assume this is a directory
 				DirectoryStream<Path> stream = f.newDirectoryStream();
@@ -226,7 +219,7 @@ class CopyGame extends JPanel implements ActionListener {
 		
 		/***Update to DB***/
 		public void updateDB() {
-			//publish(new CopyData("DB Update"));
+			//publish(new Globs.CopyData("DB Update"));
 			
 			//add to db
 			try {
@@ -260,14 +253,7 @@ class CopyGame extends JPanel implements ActionListener {
 				String data = URLEncoder.encode("data", "UTF-8") + "=" + URLEncoder.encode(master.toString(), "UTF-8"); 
 				
 				System.out.println("Buiding done, submitting to website");
-				String response = Globs.webTalk("mode=addGame",data);
-				
-    			if(response.equals("Sucess"))
-    				System.out.println("Website Response: Sucess");
-    			else {
-    				System.err.println("Update failed. Website Response: "+response);
-    				cancel(true);
-    			}
+				String response = Globs.webTalk("mode=addGame",data,"Sucess");
 			}
 			catch(Exception e) {
 				e.printStackTrace();
@@ -277,10 +263,10 @@ class CopyGame extends JPanel implements ActionListener {
 		
         // process copy task progress data in the event dispatch thread
         @Override
-        public void process(List<CopyData> data) {
+        public void process(List<Globs.CopyData> data) {
             if(isCancelled()) { return; }
-            CopyData update  = new CopyData(null,null, 0);
-            for (CopyData d : data) {
+            Globs.CopyData update  = new Globs.CopyData(null,null, 0);
+            for (Globs.CopyData d : data) {
                 // progress updates may be batched, so get the most recent
                 if(d.type.equals("index")) {
             		currentTask(1);
@@ -346,7 +332,7 @@ class CopyGame extends JPanel implements ActionListener {
 			    relativeFile = srcDir.relativize(file); //Obtain relative path from revitalizing gamePath and current file
 			    
 			    //Get obscurified path
-			    relativeDest = obscurePath(); //simply drop into root of dest
+			    relativeDest = Globs.obscurePath(); //simply drop into root of dest
 			    realDestFile = destDir.resolve(relativeDest);
 			    fileList.put(relativeFile,relativeDest); //add to file list
 			    
@@ -365,7 +351,7 @@ class CopyGame extends JPanel implements ActionListener {
 				       	bytesCopied += out.size() - presize;
 				       	presize = out.size();
 				       	progress = (int)(100*((float)bytesCopied / (float)totalBytes));
-	                    CopyData current = new CopyData(file,realDestFile,getKiloBytes(bytesCopied));
+	                    Globs.CopyData current = new Globs.CopyData(file,realDestFile,getKiloBytes(bytesCopied));
 	                    try {
 	                       	setProgress(progress);
 	                    }
@@ -403,23 +389,5 @@ class CopyGame extends JPanel implements ActionListener {
 			    return FileVisitResult.CONTINUE;
 			}
 		}
-    }
-    
-    /*****This is the container class for the current file progress****/
-    class CopyData {
-        public Path srcFilePath, destFilePath;
-        public long kiloBytesCopied;
-        public String type;
-        
-        CopyData(String type) {
-        	this.type = type;        		
-        }
-        
-        CopyData(Path srcFilePath, Path destFilePath, long kiloBytesCopied) {
-        	this.destFilePath = destFilePath;
-            this.srcFilePath = srcFilePath;
-            this.kiloBytesCopied = kiloBytesCopied;
-            this.type = "";
-        }
     }
 }

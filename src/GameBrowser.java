@@ -83,7 +83,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
         	DefaultMutableTreeNode book = null;
 		
 			System.out.println("Asking server for game list");
-			String response = Globs.webTalk("mode=buildTree");
+			String response = Globs.webTalk("mode=buildTree",null,null);
 			//System.out.println("Response: "+response);
 			
 			//use modified JSONObject to return hashmap iterator

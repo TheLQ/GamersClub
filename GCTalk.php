@@ -21,15 +21,8 @@ switch($MODE) {
 			//user dosen't exist, return false
 			echo "false";
 		}
-		else {
-			$result = mysql_fetch_array($query);
-			$info = array();
-			$info['name'] = $result['name'];
-			$info['uid'] = $result['counter'];
-			$info['admin'] = $result['admin'];
-			$info['username'] = $result['username'];
-			echo json_encode($info);
-		}
+		else
+			echo json_encode(mysql_fetch_assoc($query));
 	break;
 	
 	//Is this a gameBrowse tree build request?
@@ -107,14 +100,13 @@ switch($MODE) {
 		
 		switch(json_last_error()) {
 			case JSON_ERROR_DEPTH:
-				echo ' - Maximum stack depth exceeded';
+				die(' - Maximum stack depth exceeded');
 			break;
 			case JSON_ERROR_CTRL_CHAR:
-				echo ' - Unexpected control character found';
+				die(' - Unexpected control character found');
 			break;
 			case JSON_ERROR_SYNTAX:
-				echo ' - Syntax error, malformed JSON';
-				echo $rawinput;
+				die(" - Syntax error, malformed JSON <br>$rawinput");
 			break;
 			case JSON_ERROR_NONE:
 				//do nothing
@@ -153,7 +145,53 @@ switch($MODE) {
 		$values = substr($values,0,-1);
 		mysql_query("INSERT INTO fileList VALUES $values") or die("MYSQL ERROR: "+mysql_error());
 		
+		return "Sucess";
+	break;
+	
+	case "updateProfile":
+		$rawJSON = $_POST['data'];
+		$json = json_decode($rawJSON ,true);
+		
+		switch(json_last_error()) {
+			case JSON_ERROR_DEPTH:
+				return " - Maximum stack depth exceeded";
+			break;
+			case JSON_ERROR_CTRL_CHAR:
+				return "- Unexpected control character found";
+			break;
+			case JSON_ERROR_SYNTAX:
+				return " - Syntax error, malformed JSON <br>$rawinput";
+			break;
+			case JSON_ERROR_NONE:
+				//do nothing
+			break;
+		}
+		
+		$avatar = ($json['avatar'] == "") ? null : mysql_real_escape_string($json['avatar'])
+		
+		$query = sprintf("UPDATE users SET name = '%s', gamersTag = '%s', gradeNum = '%s', bestAt = '%s', `favGames` = '%s', `avatar` = '%s', `desc` = '%s' WHERE counter = '%s'",
+			mysql_real_escape_string($json['realName']),
+			mysql_real_escape_string($json['gamersTag']),
+			mysql_real_escape_string($json['grade']),
+			mysql_real_escape_string($json['bestAt']),
+			mysql_real_escape_string($json['favGame']),
+			$avatar,
+			mysql_real_escape_string($json['descPane']),
+			mysql_real_escape_string($json['userid']));
+		//.echo $query;
+		mysql_query($query) or die("MYSQL ERROR: ".mysql_error());
+		
 		echo "Sucess";
+	break;
+	
+	case "reportProfile":
+		$userId = mysql_real_escape_string($_GET['userid']);
+		
+		$query = mysql_query("SELECT * FROM users WHERE counter = '$userId'");
+		if(mysql_num_rows($query) == 0)
+			die("User ID Invalid");
+		
+		echo json_encode(mysql_fetch_array($query));
 	break;
 	
 	//No mode exists!

@@ -49,7 +49,7 @@ public class MainMenu extends JPanel implements ActionListener {
     		Globs.switchBody("PeopleBrowser");
     	}
     	else if(cmd.equals("Profile")) {
-    		
+    		Globs.switchBody("Profile");
     	}
     	else if(cmd.equals("Options")) {
     		
