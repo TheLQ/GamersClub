@@ -1,20 +1,41 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.nio.file.*;
-import java.net.URI;
-import javax.swing.filechooser.*;
-import java.io.*;
-import java.text.*;
-import javax.swing.border.*;
-import java.util.*;
-import org.json.me.*;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+
+import com.jgoodies.forms.layout.FormLayout;
 
 import com.l2fprod.common.swing.JDirectoryChooser;
 
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.debug.FormDebugPanel;
+import java.awt.BorderLayout;
+import java.awt.Component;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.io.File;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.json.me.JSONObject;
 
 class AddGame extends JPanel implements ActionListener {
 	JTextField gameDirField, gameName, gameCreate, typeCustom, uploadName;

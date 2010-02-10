@@ -4,24 +4,49 @@
  * @desc: Pastes the randomized game to the users folder of choice. Note that this is mostly a copy of CopyGame)
  *******************************/
 
-import javax.swing.*;
-import java.awt.Component;
-import java.awt.event.*;
-import javax.swing.border.*;
-import java.nio.file.*;
-import java.util.Date;
-import java.beans.*;
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.nio.channels.*;
-import java.nio.file.attribute.*;
-import java.lang.*;
-import org.json.me.*;
-import java.net.*;
-import java.text.*;
-
 import com.l2fprod.common.swing.JDirectoryChooser;
+
+import java.awt.Component;
+import java.awt.Image;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
+import java.nio.channels.FileChannel;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import java.util.concurrent.CancellationException;
+
+import java.util.Map.Entry;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
+
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EtchedBorder;
+
+import org.json.me.JSONObject;
 
 class PasteGame extends JPanel implements ActionListener {
 	JLabel copyPLabel, dbPLabel; //all process labels

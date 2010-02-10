@@ -8,19 +8,28 @@
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
+
 import java.awt.event.ActionListener;
+
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+
 import java.net.URL;
 import java.net.URLConnection;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.ImageIcon;
-import java.awt.Image;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import java.util.UUID;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 
 public class Globs {
 	public static JComponent setSize(JComponent comp, int height, int width) {

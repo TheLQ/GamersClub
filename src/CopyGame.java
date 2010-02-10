@@ -4,25 +4,63 @@
  * @desc: Copies the game that the user submits
  *******************************/
 
-import javax.swing.*;
 import java.awt.Component;
-import java.awt.event.*;
+import java.awt.Graphics;
 import java.awt.Image;
-import javax.imageio.ImageIO;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import java.awt.image.BufferedImage;
-import javax.swing.border.*;
-import java.nio.file.*;
-import java.util.Date;
-import java.beans.*;
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.nio.channels.*;
-import java.nio.file.attribute.*;
-import java.lang.*;
-import org.json.me.*;
-import java.net.*;
-import java.text.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import java.net.URLEncoder;
+
+import java.nio.channels.FileChannel;
+
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.FileVisitor;
+import java.nio.file.FileVisitResult;
+import java.nio.file.NotDirectoryException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileAttribute;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import java.util.concurrent.CancellationException;
+
+import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
+
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EtchedBorder;
+
+import org.json.me.JSONObject;
 
 class CopyGame extends JPanel implements ActionListener {
 	JLabel indexPLabel, copyPLabel, dbPLabel; //all process labels

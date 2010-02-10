@@ -1,9 +1,17 @@
 package org.json.me.test;
 
+import java.io.Writer;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import org.json.me.*;
+
+import org.json.me.JSONArray;
+import org.json.me.JSONObject;
+import org.json.me.JSONString;
+import org.json.me.JSONStringer;
+import org.json.me.JSONTokener;
+import org.json.me.StringWriter;
 
 /**
  * Test class. This file is not formally a member of the org.json library.

@@ -5,10 +5,12 @@
  *
  * @author Leon Blakey/Lord.Quackstar
  */
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 class PeopleBrowser extends JPanel implements ActionListener{
 	
 	public JPanel generate() {

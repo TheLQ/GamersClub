@@ -5,24 +5,49 @@
  * @author 
  * @version 1.00 2010/2/5
  */
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.nio.file.*;
-import java.net.URI;
-import javax.swing.filechooser.*;
-import java.io.*;
-import java.text.*;
-import javax.swing.border.*;
-import java.util.*;
-import org.json.me.*;
-import java.net.URLEncoder;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
- 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
+
 import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.debug.FormDebugPanel;
+
+import java.awt.BorderLayout;
+import java.awt.Graphics;
+import java.awt.Image;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.awt.image.BufferedImage;
+
+import java.io.File;
+
+import java.net.URLEncoder;
+
+import java.nio.file.Path;
+
+import javax.imageio.ImageIO;
+
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.json.me.JSONObject;
+
+ 
+
 
 public class Profile extends JPanel implements ActionListener {
 	

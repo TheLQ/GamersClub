@@ -5,25 +5,56 @@
  *
  * @author Leon Blakey/Lord.Quackstar
  */
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
-import java.util.*;
-import java.text.*;
-import javax.swing.border.*;
-import javax.swing.tree.*;
+import java.awt.Component;
 
-import org.jdesktop.swingx.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeSelectionModel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.text.DateFormat;
+
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import java.util.Map.Entry;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
-import org.json.me.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
-import java.nio.file.*;
+import org.jdesktop.swingx.JXMultiSplitPane;
+import org.jdesktop.swingx.MultiSplitLayout;
+
+import org.jdesktop.swingx.MultiSplitLayout.Node;
+
+import org.json.me.JSONArray;
+import org.json.me.JSONObject;
+
 public class GameBrowser extends JXMultiSplitPane implements ActionListener,TreeSelectionListener{
 	JPanel picPanel, descPanel,downPanel;
 	Path gameDir;

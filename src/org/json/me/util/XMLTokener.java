@@ -1,5 +1,7 @@
 package org.json.me.util;
 
+import java.util.Hashtable;
+
 import org.json.me.JSONException;
 import org.json.me.JSONTokener;
 
