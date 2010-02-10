@@ -17,12 +17,16 @@ switch($MODE) {
 		$user = $_GET['user'];
 		$query = mysql_query("SELECT * FROM users WHERE `username`='$user'") or die("MYSQL ERROR: "+mysql_error());
 		$numRows = mysql_num_rows($query);
+		$result = mysql_fetch_assoc($query);
 		if($numRows == 0) {
 			//user dosen't exist, return false
 			echo "false";
 		}
+		else if($result['disabled'] == "1") {
+			echo "disabled";
+		}
 		else
-			echo json_encode(mysql_fetch_assoc($query));
+			echo json_encode($result);
 	break;
 	
 	//Is this a gameBrowse tree build request?

@@ -62,6 +62,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 	boolean valueChangedRunning = false;
 	int valueHash;
 	TreeMap<String,Map> gameData = new TreeMap<String,Map>();
+	String layout;
 	
 	/*Returns a completed JPanel for master class*/
 	public JXMultiSplitPane generate() {
@@ -71,8 +72,9 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		
 
 		
-		/***Configure layout***/		
-		getMultiSplitLayout().setModel(MultiSplitLayout.parseModel("(ROW (LEAF name=sidebar weight=0.35) (COLUMN weight=0.65 (ROW weight=0.6 (LEAF name=pic weight=0.25) (LEAF name=desc weight=0.75)) (LEAF name=download weight=0.4)))))"));
+		/***Configure layout***/	
+		layout = "(ROW (LEAF name=sidebar weight=0.35) (COLUMN weight=0.65 (ROW weight=0.6 (LEAF name=pic weight=0.25) (LEAF name=desc weight=0.75)) (LEAF name=download weight=0.4)))))";
+		getMultiSplitLayout().setModel(MultiSplitLayout.parseModel(layout));
 		add(buildTreeMenu(),"sidebar");
 		add(picPanel = new JPanel(),"pic");
 		add(downPanel = new JPanel(),"download");
@@ -258,6 +260,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		revalidate();
 		System.out.println("Running");
 		this.valueChangedRunning = false;
+		getMultiSplitLayout().setModel(MultiSplitLayout.parseModel(layout));
     }
 	
 	public void actionPerformed(ActionEvent e) {
