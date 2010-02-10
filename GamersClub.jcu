@@ -93,7 +93,7 @@
 			<path>src\CopyGame.java</path>
 			<source>true</source>
 			<index>5</index>
-			<active>false</active>
+			<active>true</active>
 		</docitem>
 		<docitem>
 			<path>src\PasteGame.java</path>
@@ -105,7 +105,7 @@
 			<path>src\Profile.java</path>
 			<source>true</source>
 			<index>7</index>
-			<active>true</active>
+			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>TODO.txt</path>

@@ -1,11 +1,10 @@
-/*******************************
- * CopyGame by Leon Blakey
+ /**
+ * Class GameBrowser
  *
- * @desc: Pastes the randomized game to the users folder of choice. Note that this is mostly a copy of CopyGame)
- *******************************/
-
-import com.l2fprod.common.swing.JDirectoryChooser;
-
+ * Pastes the randomized game to the users folder of choice. Note that this is mostly a copy of CopyGame)
+ *
+ * @author Leon Blakey/Lord.Quackstar
+ */
 import java.awt.Component;
 import java.awt.Image;
 
@@ -45,6 +44,8 @@ import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
+
+import com.l2fprod.common.swing.JDirectoryChooser;
 
 import org.json.me.JSONObject;
 

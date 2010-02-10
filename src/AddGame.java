@@ -1,9 +1,10 @@
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-
-import com.jgoodies.forms.layout.FormLayout;
-
-import com.l2fprod.common.swing.JDirectoryChooser;
-
+/**
+ * Class AddGame
+ *
+ * Makes Main Menu and redirects to other panels
+ *
+ * @author Leon Blakey/Lord.Quackstar
+ */
 import java.awt.BorderLayout;
 import java.awt.Component;
 
@@ -34,6 +35,11 @@ import javax.swing.border.EtchedBorder;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.FormLayout;
+
+import com.l2fprod.common.swing.JDirectoryChooser;
 
 import org.json.me.JSONObject;
 

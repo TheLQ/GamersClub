@@ -1,13 +1,8 @@
 Things to do and that aren't finished
-Last updated January 29, 2010 at 7:24 PM
-
-Get ANT script to work
--Jars need to be included
+Last updated Febuary 9, 2010 at 9:47 PM
 
 Make GameBrowser look nice
 Make Sure debug messages show up immediatly
-Clean up Import messages
--Remove Generics from CopyGame and PasteGame for parser to work
 Make PeopleBrowser
 -Search list, list looks like facebook chat
 -Profile looks like phpBB2

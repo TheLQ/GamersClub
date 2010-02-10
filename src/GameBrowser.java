@@ -1,7 +1,7 @@
 /**
  * Class GameBrowser
  *
- * A subclass containing everything needed to handle the game browser
+ * Makes Main Menu and redirects to other panels
  *
  * @author Leon Blakey/Lord.Quackstar
  */
@@ -49,7 +49,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.MultiSplitLayout;
-
 import org.jdesktop.swingx.MultiSplitLayout.Node;
 
 import org.json.me.JSONArray;

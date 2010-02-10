@@ -1,9 +1,10 @@
-/*******************************
- * CopyGame by Leon Blakey
+/**
+ * Class CopyGame
  *
- * @desc: Copies the game that the user submits
- *******************************/
-
+ * Copies game from user to randomized folder
+ *
+ * @author Leon Blakey/Lord.Quackstar
+ */
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;

@@ -1,7 +1,7 @@
 /**
- * Method Globs
+ * Class Globs
  *
- * Contains all the global functions needed
+ * Utility class and method holder
  *
  * @author Leon Blakey/Lord.Quackstar
  */
