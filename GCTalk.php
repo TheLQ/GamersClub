@@ -167,7 +167,7 @@ switch($MODE) {
 			break;
 		}
 		
-		$avatar = ($json['avatar'] == "") ? null : mysql_real_escape_string($json['avatar'])
+		$avatar = ($json['avatar'] == "") ? null : mysql_real_escape_string($json['avatar']);
 		
 		$query = sprintf("UPDATE users SET name = '%s', gamersTag = '%s', gradeNum = '%s', bestAt = '%s', `favGames` = '%s', `avatar` = '%s', `desc` = '%s' WHERE counter = '%s'",
 			mysql_real_escape_string($json['realName']),

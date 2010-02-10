@@ -55,7 +55,9 @@ import org.json.me.JSONArray;
 import org.json.me.JSONObject;
 
 public class GameBrowser extends JXMultiSplitPane implements ActionListener,TreeSelectionListener{
-	JPanel picPanel, descPanel,downPanel;
+	JPanel picPanel,downPanel;
+	JScrollPane descPanel;
+	JTextArea descPane;
 	Path gameDir;
 	boolean valueChangedRunning = false;
 	int valueHash;
@@ -67,18 +69,28 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		
 		removeAll(); //Might get recalled, so clear panel first
 		
+
+		
 		/***Configure layout***/		
-		getMultiSplitLayout().setModel(MultiSplitLayout.parseModel("(ROW (LEAF name=sidebar weight=0.25) (COLUMN weight=0.75 (ROW weight=0.6 (LEAF name=pic weight=0.25) (LEAF name=desc weight=0.75)) (LEAF name=download weight=0.4)))))"));
+		getMultiSplitLayout().setModel(MultiSplitLayout.parseModel("(ROW (LEAF name=sidebar weight=0.35) (COLUMN weight=0.65 (ROW weight=0.6 (LEAF name=pic weight=0.25) (LEAF name=desc weight=0.75)) (LEAF name=download weight=0.4)))))"));
 		add(buildTreeMenu(),"sidebar");
 		add(picPanel = new JPanel(),"pic");
-		add(descPanel = new JPanel(),"desc");
 		add(downPanel = new JPanel(),"download");
 		picPanel.add(new JLabel("Please Select a Game",JLabel.CENTER));
 		
+		/***Config descPane for panel***/
+		descPane = new JTextArea(10,35);
+		descPane.setEditable(false);
+		descPane.setBorder(null); 
+		descPane.setLineWrap(true);
+		descPane.setWrapStyleWord(true);
+		descPane.setBackground(this.getBackground());
+		add(descPanel = new JScrollPane(descPane),"desc");
+		
 		picPanel.setLayout(new BoxLayout(picPanel,BoxLayout.Y_AXIS));
-		descPanel.setLayout(new BoxLayout(descPanel,BoxLayout.Y_AXIS));
 		downPanel.setLayout(new BoxLayout(downPanel,BoxLayout.Y_AXIS));
 		downPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)); 
+		descPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		
 		return this;
 	}
@@ -190,16 +202,9 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
         	Map gameInfo = gameData.get(nodeInfo.toString());
             
             /***Setup desccription pane***/
-        	descPanel.removeAll();
         	String desc = gameInfo.get("desc").toString();
-		   	JTextArea descPane = new JTextArea(desc);
-		   	descPane.setEditable(false);
-		    descPane.setBorder(null); 
-		    descPane.setLineWrap(true);
-		    descPane.setWrapStyleWord(true);
-		    descPane.setBackground(this.getBackground());
-		    descPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		    descPanel.add(descPane);
+        	System.out.println(desc);
+		    descPane.setText(desc);
 		      	
 		    /***Setup Picture Pane***/
 		    picPanel.removeAll();
