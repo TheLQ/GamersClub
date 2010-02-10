@@ -1,0 +1,94 @@
+Warzone 2100 Portable Launcher
+=============================
+
+Copyright 2004-2008 John T. Haller
+Copyright 2007-2008 Billy227
+
+Website: http://PortableApps.com/
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+ABOUT WARZONE 2100 PORTABLE
+==========================
+The Warzone 2100 Portable Launcher allows you to run Warzone 2100 from a removable drive whose
+letter changes as you move it to another computer.  The application can be entirely self-
+contained on the drive and then used on any Windows computer.
+
+
+LICENSE
+=======
+This code is released under the GPL.  The full code is included with this package as
+Warzone2100Portable.nsi.
+
+
+INSTALLATION / DIRECTORY STRUCTURE
+==================================
+By default, the program expects one of these directory structures:
+
+-\ <--- Directory with Warzone2100Portable.exe
+	+\App\
+		+Warzone 2100\
+	+\Data\
+		+\settings\
+
+It can be used in other directory configurations by including the Warzone2100Portable.ini
+file in the same directory as Warzone2100Portable.exe and configuring it as details in the
+INI file section below.
+
+
+WARZONE2100PORTABLE.INI CONFIGURATION
+=====================================
+The Warzone 2100 Portable Launcher will look for an ini file called Warzone2100Portable.ini
+within its directory (see the Installation/Directory Structure section above for more
+details).  If you are happy with the default options, it is not necessary, though.  The
+INI file is formatted as follows:
+
+[Warzone2100Portable]
+Warzone2100Directory=App\Warzone 2100
+SettingsDirectory=Data\settings
+Warzone2100Executable=warzone2100.exe
+AdditionalParameters=
+DisableSplashScreen=false
+ScreenHeight=768
+ScreenWidth=1024
+
+The Warzone2100Directory and SettingsDirectory entries should be set to the *relative* path
+to the directory containing warzone2100.exe and the settings files.  They must be a
+subdirectory (or multiple subdirectories) of the directory containing
+Warzone2100Portable.exe.  The default entries for these are described in the installation
+section above.
+
+The Warzone2100Executable entry allows you to set the Warzone 2100 Portable Launcher to use an
+alternate EXE call to launch Warzone 2100.  This is helpful if you are using a machine that
+is set to deny warzone2100.exe from running.
+You'll need to rename the warzone2100.exe file and then enter the name you gave it on the
+Warzone2100Executable= line of the INI.
+
+The AdditionalParameters entry allows you to pass additional commandline parameter
+entries to warzone2100.exe.  Whatever you enter here will be appended to the call to
+warzone2100.exe.
+
+DisableSplashScreen allows you to disable the splash screen when set to true.
+
+The ScreenHeight and ScreenWidth entries allow you run warzone2100.exe with a certain screen resolution.
+
+PROGRAM HISTORY / ABOUT THE AUTHOR
+==================================
+This launcher grew out of John T. Haller's work on the Firefox Portable and Thunderbird Portable
+projects.  Some of the ideas arose from discussions relating to Firefox Portable &
+Thunderbird Portable in the mozillaZine forums.

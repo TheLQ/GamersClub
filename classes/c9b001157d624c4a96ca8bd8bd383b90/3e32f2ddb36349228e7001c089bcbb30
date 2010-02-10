@@ -1,0 +1,209 @@
+;Copyright (C) 2004-2009 John T. Haller
+;Copyright (C) 2007-2009 Billy227
+
+;Website: http://PortableApps.com/
+
+;This software is OSI Certified Open Source Software.
+;OSI Certified is a certification mark of the Open Source Initiative.
+
+;This program is free software; you can redistribute it and/or
+;modify it under the terms of the GNU General Public License
+;as published by the Free Software Foundation; either version 2
+;of the License, or (at your option) any later version.
+
+;This program is distributed in the hope that it will be useful,
+;but WITHOUT ANY WARRANTY; without even the implied warranty of
+;MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;GNU General Public License for more details.
+
+;You should have received a copy of the GNU General Public License
+;along with this program; if not, write to the Free Software
+;Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+!define NAME "Warzone2100Portable"
+!define PORTABLEAPPNAME "Warzone 2100 Portable"
+!define APPNAME "Warzone 2100"
+!define VER "2.1.2.0"
+!define WEBSITE "PortableApps.com"
+!define DEFAULTEXE "warzone2100.exe"
+!define DEFAULTAPPDIR "Warzone 2100"
+!define DEFAULTSETTINGSDIR "settings"
+!define LAUNCHERLANGUAGE "English"
+
+;=== Program Details
+Name "${PORTABLEAPPNAME}"
+OutFile "..\..\${NAME}.exe"
+Caption "${PORTABLEAPPNAME} | PortableApps.com"
+VIProductVersion "${VER}"
+VIAddVersionKey ProductName "${PORTABLEAPPNAME}"
+VIAddVersionKey Comments "Allows ${APPNAME} to be run from a removable drive.  For additional details, visit ${WEBSITE}"
+VIAddVersionKey CompanyName "PortableApps.com"
+VIAddVersionKey LegalCopyright "PortableApps.com & Contributors"
+VIAddVersionKey FileDescription "${PORTABLEAPPNAME}"
+VIAddVersionKey FileVersion "${VER}"
+VIAddVersionKey ProductVersion "${VER}"
+VIAddVersionKey InternalName "${PORTABLEAPPNAME}"
+VIAddVersionKey LegalTrademarks "PortableApps.com is a Trademark of Rare Ideas, LLC."
+VIAddVersionKey OriginalFilename "${NAME}.exe"
+;VIAddVersionKey PrivateBuild ""
+;VIAddVersionKey SpecialBuild ""
+
+;=== Runtime Switches
+CRCCheck On
+WindowIcon Off
+SilentInstall Silent
+AutoCloseWindow True
+RequestExecutionLevel user
+
+; Best Compression
+SetCompress Auto
+SetCompressor /SOLID lzma
+SetCompressorDictSize 32
+SetDatablockOptimize On
+
+;=== Include
+;(Custom)
+!include GetParametersUnicode.nsh
+!include ReadINIStrWithDefault.nsh
+
+;=== Program Icon
+Icon "..\..\App\AppInfo\appicon.ico"
+
+;=== Icon & Stye ===
+!define MUI_ICON "..\..\App\AppInfo\appicon.ico"
+
+;=== Languages
+;!insertmacro MUI_LANGUAGE "${LAUNCHERLANGUAGE}"
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\${LAUNCHERLANGUAGE}.nlf"
+!include PortableApps.comLauncherLANG_${LAUNCHERLANGUAGE}.nsh
+
+Var PROGRAMDIRECTORY
+Var SETTINGSDIRECTORY
+Var ADDITIONALPARAMETERS
+Var EXECSTRING
+Var PROGRAMEXECUTABLE
+Var DISABLESPLASHSCREEN
+Var SECONDARYLAUNCH
+Var DEFAULTLOCATION
+Var MISSINGFILEORPATH
+Var SCREENHEIGHT
+Var SCREENWIDTH
+
+Section "Main"
+	;=== Check if already running
+	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "${NAME}") i .r1 ?e'
+	Pop $0
+	StrCmp $0 0 CheckRunning
+		StrCpy $SECONDARYLAUNCH "true"
+		Goto CheckINI
+
+	CheckRunning:
+		FindProcDLL::FindProc "warzone2100.exe"
+		StrCmp $R0 "1" "" CheckINI
+			MessageBox MB_OK|MB_ICONEXCLAMATION `$(LauncherAlreadyRunning)`
+			Abort
+
+	CheckINI:
+		;=== Find the INI file, if there is one
+		IfFileExists "$EXEDIR\Data\${NAME}.ini" "" NoINI
+
+			;=== Read the parameters from the INI file
+			${ReadINIStrWithDefault} $0 "$EXEDIR\Data\${NAME}.ini" "${NAME}" "${APPNAME}Directory" "App\${DEFAULTAPPDIR}"
+			StrCpy $PROGRAMDIRECTORY "$EXEDIR\$0"
+			${ReadINIStrWithDefault} $0 "$EXEDIR\Data\${NAME}.ini" "${NAME}" "SettingsDirectory" "Data\${DEFAULTSETTINGSDIR}"
+			StrCpy $SETTINGSDIRECTORY "$EXEDIR\$0"
+			${ReadINIStrWithDefault} $ADDITIONALPARAMETERS "$EXEDIR\Data\${NAME}.ini" "${NAME}" "AdditionalParameters" ""
+			${ReadINIStrWithDefault} $PROGRAMEXECUTABLE "$EXEDIR\Data\${NAME}.ini" "${NAME}" "${APPNAME}Executable" "${DEFAULTEXE}"
+			${ReadINIStrWithDefault} $DISABLESPLASHSCREEN "$EXEDIR\Data\${NAME}.ini" "${NAME}" "DisableSplashScreen" "false"
+			${ReadINIStrWithDefault} $SCREENHEIGHT "$EXEDIR\Data\${NAME}.ini" "${NAME}" "ScreenHeight" "768"
+			${ReadINIStrWithDefault} $SCREENWIDTH "$EXEDIR\Data\${NAME}.ini" "${NAME}" "ScreenWidth" "1024"
+			StrCmp $PROGRAMDIRECTORY "$EXEDIR\App\${DEFAULTAPPDIR}" "" CheckForFile
+			StrCmp $SETTINGSDIRECTORY "$EXEDIR\Data\${DEFAULTSETTINGSDIR}" "" CheckForFile
+				StrCpy $DEFAULTLOCATION "true"
+
+		CheckForFile:
+			IfFileExists "$PROGRAMDIRECTORY\$PROGRAMEXECUTABLE" FoundProgramEXE NoProgramEXE
+
+	NoINI:
+		;=== No INI file, so we'll use the defaults
+		StrCpy $ADDITIONALPARAMETERS ""
+		StrCpy $PROGRAMEXECUTABLE "${DEFAULTEXE}"
+		StrCpy $DISABLESPLASHSCREEN "false"
+		StrCpy $DEFAULTLOCATION "true"
+		StrCpy $SCREENWIDTH "1024"
+		StrCpy $SCREENHEIGHT "768"
+
+		IfFileExists "$EXEDIR\App\${DEFAULTAPPDIR}\${DEFAULTEXE}" "" NoProgramEXE
+			StrCpy $PROGRAMDIRECTORY "$EXEDIR\App\${DEFAULTAPPDIR}"
+			StrCpy $SETTINGSDIRECTORY "$EXEDIR\Data\${DEFAULTSETTINGSDIR}"
+			GoTo FoundProgramEXE
+
+	NoProgramEXE:
+		;=== Program executable not where expected
+		StrCpy $MISSINGFILEORPATH $PROGRAMEXECUTABLE
+		MessageBox MB_OK|MB_ICONEXCLAMATION `$(LauncherFileNotFound)`
+		Abort
+
+	FoundProgramEXE:
+
+		StrCmp $DISABLESPLASHSCREEN "true" SkipSplashScreen
+			;=== Show the splash screen before processing the files
+			InitPluginsDir
+			File /oname=$PLUGINSDIR\splash.jpg "${NAME}.jpg"
+			newadvsplash::show /NOUNLOAD 1200 0 0 -1 /L "$PLUGINSDIR\splash.jpg"
+
+	SkipSplashScreen:
+		;=== Check for data files
+		;IfFileExists "$PROGRAMDIRECTORY\SpeedCrunch.ini" GetAppLanguage ;=== settings already in program directory
+		IfFileExists "$SETTINGSDIRECTORY\Warzone2100Portable.ini" MoveSettings ;=== settings found in data directory
+			CreateDirectory "$EXEDIR\Data\settings"
+
+	MoveSettings:
+		SetOutPath `$EXEDIR\App\Warzone 2100`
+		;CreateDirectory "$EXEDIR\Data\settings\warzone2100\maps"
+        ;        CopyFiles /SILENT "$EXEDIR\Data\settings\maps\*" "$EXEDIR\Data\settings\warzone2100\"
+		;CreateDirectory "$DOCUMENTS\Warzone 2100"
+        ;        CopyFiles /SILENT "$EXEDIR\Data\settings\warzone2100\*" "$DOCUMENTS\Warzone 2100"
+        ;        CreateDirectory "$EXEDIR\App\Warzone 2100\mods"
+        ;        CopyFiles /SILENT "$EXEDIR\Data\settings\mods\*" "$EXEDIR\App\Warzone 2100\mods"
+		GoTo GetPassedParameters
+
+	GetPassedParameters:
+		;=== Get any passed parameters
+		${GetParametersUnicode} $0
+		StrCmp "'$0'" "''" "" LaunchProgramParameters
+
+		;=== No parameters
+		StrCpy $EXECSTRING `"$PROGRAMDIRECTORY\$PROGRAMEXECUTABLE"`
+		Goto AdditionalParameters
+
+	LaunchProgramParameters:
+		StrCpy $EXECSTRING `"$PROGRAMDIRECTORY\$PROGRAMEXECUTABLE" $0`
+
+	AdditionalParameters:
+		StrCmp $ADDITIONALPARAMETERS "" LaunchNow
+
+		;=== Additional Parameters
+		StrCpy $EXECSTRING `$EXECSTRING $ADDITIONALPARAMETERS`
+
+	LaunchNow:
+		SetOutPath "$PROGRAMDIRECTORY"
+		StrCpy $EXECSTRING `$EXECSTRING $ADDITIONALPARAMETERS --configdir "../../Data/settings" --resolution $SCREENWIDTHx$SCREENHEIGHT`
+		StrCmp $SECONDARYLAUNCH "true" LaunchAndExit
+		ExecWait $EXECSTRING
+
+		;=== Move settings back
+                ;CopyFiles /SILENT "$DOCUMENTS\Warzone 2100\*" "$EXEDIR\Data\settings\warzone2100"
+                ;CopyFiles /SILENT "$EXEDIR\App\Warzone 2100\mods\*" "$EXEDIR\Data\settings\mods"
+                ;RMDir /r "$DOCUMENTS\Warzone 2100"
+                ;RMDir /r "$EXEDIR\App\Warzone 2100\mods"
+		Goto TheEnd
+
+	LaunchAndExit:
+	        IfFileExists "$EXEDIR\Data\settings\${NAME}.ini" "" NoProgramEXE
+		StrCpy $EXECSTRING `$EXECSTRING $ADDITIONALPARAMETERS --configdir "../../Data/settings" --resolution $SCREENWIDTHx$SCREENHEIGHT`
+		Exec $EXECSTRING
+
+	TheEnd:
+		newadvsplash::stop /WAIT
+SectionEnd

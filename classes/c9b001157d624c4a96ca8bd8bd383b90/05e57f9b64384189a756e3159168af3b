@@ -1,0 +1,24 @@
+[Format]
+Type=PortableApps.comFormat
+Version=0.9.8
+
+[Details]
+Name=WarZone 2100 Portable
+Publisher=App Developer & PortableApps.com
+Homepage=PortableApps.com
+Category=Games
+Description=WarZone 2100 Portable is a realtime strategy game.
+
+[License]
+Shareable=true
+OpenSource=true
+Freeware=true
+CommercialUse=true
+
+[Version]
+PackageVersion=2.1.2
+DisplayVersion=2.1.2
+
+[Control]
+Icons=1
+Start=Warzone2100Portable.exe

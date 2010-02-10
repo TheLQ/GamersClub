@@ -1,0 +1,11 @@
+[Warzone2100Portable]
+Warzone2100Directory=App\Warzone 2100
+SettingsDirectory=Data\settings
+Warzone2100Executable=warzone2100.exe
+AdditionalParameters=
+DisableSplashScreen=false
+ScreenHeight=768
+ScreenWidth=1024
+
+# The above options are explained in the included readme.txt
+# This INI is just an example and is not used in its current location
