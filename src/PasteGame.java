@@ -5,6 +5,8 @@
  *
  * @author Leon Blakey/Lord.Quackstar
  */
+import com.l2fprod.common.swing.JDirectoryChooser;
+
 import java.awt.Component;
 import java.awt.Image;
 
@@ -44,8 +46,6 @@ import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
-
-import com.l2fprod.common.swing.JDirectoryChooser;
 
 import org.json.me.JSONObject;
 

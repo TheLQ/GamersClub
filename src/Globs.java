@@ -33,7 +33,7 @@ import javax.swing.JComponent;
 
 public class Globs {
 	public static JComponent setSize(JComponent comp, int height, int width) {
-     	Dimension size = comp.getPreferredSize();
+     	Dimension size = comp.getMaximumSize();
      	if(height!=0) {
       		size.height = height;
      	}

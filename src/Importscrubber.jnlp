@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp codebase="http://importscrubber.sourceforge.net/" href="http://importscrubber.sourceforge.net/Importscrubber.jnlp">
+<information>
+	<title>Importscrubber</title>
+	<vendor>Tom Copeland</vendor>
+	<description>Importscrubber - clean up your source code</description>
+	<description kind="short">Importscrubber is a Java utility to clean up the import statements in a Java source code file</description>
+	<icon href="scrubbrush.gif"/>
+	<homepage href="http://importscrubber.sourceforge.net/"/>
+</information> 
+<security>
+	<all-permissions/>
+</security>
+<offline-allowed/>
+<resources>
+	<j2se version="1.2+"/>
+	<jar href="importscrubber.jar"/>
+	<jar href="bcel.jar" download="eager"/>
+</resources> 
+<application-desc main-class="net.sourceforge.importscrubber.ImportScrubberGUI"/>
+</jnlp>

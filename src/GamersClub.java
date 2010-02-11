@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -35,9 +37,12 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.EtchedBorder;
 
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -53,11 +58,16 @@ import javax.swing.text.StyledDocument;
 import org.json.me.JSONException;
 import org.json.me.JSONObject;
 
+//import javax.swing.border.TitledBorder;
+
+
+
+
  
 public class GamersClub extends JFrame implements ActionListener {
     JPanel contentPane;
     public static JPanel bodyPanel;
-    Border bodyBorder;
+    ComponentTitledBorder bodyBorder;
     JTextPane errorLog;
     PrintStream oldOut,oldErr;
     JScrollPane errorScroll;
@@ -85,7 +95,8 @@ public class GamersClub extends JFrame implements ActionListener {
 		errorScroll = new JScrollPane(errorLog);
 		Globs.setSize(errorScroll,125,0);
 		errorScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
+		errorScroll.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		errorScroll.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
 		
       	/***Init***/
       	oldOut = System.out;
@@ -96,9 +107,9 @@ public class GamersClub extends JFrame implements ActionListener {
       	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Will exit when close button is pressed
      	setTitle("Gamers Club Distrobution Service");
        	setMinimumSize(new Dimension(1000,700));
-       	//initLookAndFeel("System",""); //changes look and feel for interesting gui
        	try {
       		UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+      		//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
    		} 
    		catch (Exception e) {
    			e.printStackTrace();
@@ -156,13 +167,23 @@ public class GamersClub extends JFrame implements ActionListener {
       	JLabel bannerLabel = new JLabel("Gamers Club Distribution Service",null,JLabel.CENTER);
 		bannerLabel.setFont(new Font("Serif", Font.PLAIN, 36)); //make it big
 		bannerLabel.setMinimumSize(new Dimension(600,100));
-		//bannerLabel.setBorder(BorderFactory.createLineBorder(Color.black)); //Black line border
+		//bannerLabel.setBorder(BorderFactory.createEmptyBorder(-10,0,-10,0)); //Black line border
 		bannerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		contentPane.add(bannerLabel,BorderLayout.NORTH);
 		
 		/***Make Main Body Panel***/
 		bodyPanel = new JPanel(new CardLayout());
-		bodyBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Home");
+		bodyPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		JButton homeButton = new JButton("Main Menu");
+		homeButton.setFocusPainted(false);
+		
+		bodyBorder = new ComponentTitledBorder(homeButton, bodyPanel, BorderFactory.createEtchedBorder()); 
+		homeButton.addActionListener(new ActionListener(){ 
+		            public void actionPerformed(ActionEvent e){ 
+		                Globs.switchBody("MainMenu");
+		            }
+		});
+
 		bodyPanel.setBorder(bodyBorder);
 		//Start adding panels
 		bodyPanel.add(MainMenu.generate(),"MainMenu");
@@ -191,57 +212,9 @@ public class GamersClub extends JFrame implements ActionListener {
 	/* Description: All the actionListeners for Main Menu
 	 * Used by: Hierchy Buttons */
 	public void actionPerformed(ActionEvent e) {
-    	
-    }
-    
-    /* Description: configures how the gui looks
-     * Used by: GamersClub.GamersClub init*/
-    public void initLookAndFeel(final String LOOKANDFEEL, final String THEME) {
-        String lookAndFeel = null;
-       
-        if (LOOKANDFEEL != null) {
-            if (LOOKANDFEEL.equals("Metal")) {
-               lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
-               //lookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel"; //Alternative
-            }
-            else if (LOOKANDFEEL.equals("System")) 
-                lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-            else if (LOOKANDFEEL.equals("Motif")) 
-                lookAndFeel = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
-            else if (LOOKANDFEEL.equals("GTK")) 
-                lookAndFeel = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
-            else {
-                System.err.println("Unexpected value of LOOKANDFEEL specified: "+LOOKANDFEEL);
-                lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
-            }
-            try {
-                UIManager.setLookAndFeel(lookAndFeel);
-                if (LOOKANDFEEL.equals("Metal")) {
-                  if (THEME.equals("DefaultMetal"))
-                     MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
-                  else if (THEME.equals("Ocean"))
-                     MetalLookAndFeel.setCurrentTheme(new OceanTheme());
-                  else
-                     //MetalLookAndFeel.setCurrentTheme(new TestTheme());
-                  UIManager.setLookAndFeel(new MetalLookAndFeel()); 
-                }
-            } 
-            catch (ClassNotFoundException e) {
-                System.err.println("Couldn't find class for specified look and feel:"+lookAndFeel);
-                System.err.println("Did you include the L&F library in the class path?");
-                System.err.println("Using the default look and feel.");
-            }
-            catch (UnsupportedLookAndFeelException e) {
-                System.err.println("Can't use the specified look and feel ("+lookAndFeel+") on this platform.");
-                System.err.println("Using the default look and feel.");
-            }
-            catch (Exception e) {
-                System.err.println("Couldn't get specified look and feel ("+lookAndFeel+"), for some reason.");
-                System.err.println("Using the default look and feel.");
-                e.printStackTrace();
-            }
-        }
-        
+    	JComboBox cb = (JComboBox)e.getSource();
+        String reqPanel = (String)cb.getSelectedItem();
+        Globs.switchBody(reqPanel);
     }
     
     /***Output Wrapper, Redirects all ouput to log at bottom***/

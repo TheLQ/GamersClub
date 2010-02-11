@@ -29,33 +29,6 @@
 			<folderitem>
 				<path>jars</path>
 			</folderitem>
-			<folderitem>
-				<path>com</path>
-			</folderitem>
-			<folderitem>
-				<path>com\jgoodies</path>
-			</folderitem>
-			<folderitem>
-				<path>com\jgoodies\forms</path>
-			</folderitem>
-			<folderitem>
-				<path>com\jgoodies\forms\tutorial</path>
-			</folderitem>
-			<folderitem>
-				<path>com\jgoodies\forms\tutorial\basics</path>
-			</folderitem>
-			<folderitem>
-				<path>com\jgoodies\forms\tutorial\building</path>
-			</folderitem>
-			<folderitem>
-				<path>com\jgoodies\forms\tutorial\factories</path>
-			</folderitem>
-			<folderitem>
-				<path>com\jgoodies\forms\tutorial\pitfalls</path>
-			</folderitem>
-			<folderitem>
-				<path>com\jgoodies\forms\tutorial\util</path>
-			</folderitem>
 		</project>
 	</projects>
 	<open_files>
@@ -93,7 +66,7 @@
 			<path>src\CopyGame.java</path>
 			<source>true</source>
 			<index>5</index>
-			<active>true</active>
+			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\PasteGame.java</path>
@@ -118,6 +91,12 @@
 			<source>true</source>
 			<index>9</index>
 			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>src\ComponentTitledBorder.java</path>
+			<source>true</source>
+			<index>10</index>
+			<active>true</active>
 		</docitem>
 	</open_files>
 	<build_files>

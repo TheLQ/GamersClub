@@ -5,6 +5,10 @@
  *
  * @author Leon Blakey/Lord.Quackstar
  */
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+
+import com.jgoodies.forms.layout.FormLayout;
+
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -39,9 +43,6 @@ import javax.swing.border.EtchedBorder;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.FormLayout;
 
 import org.json.me.JSONObject;
 

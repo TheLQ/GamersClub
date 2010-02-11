@@ -65,6 +65,14 @@
 				<folder>src</folder>
 			</fileitem>
 			<fileitem>
+				<path>src\cleanImports.jar</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\ComponentTitledBorder.java</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
 				<path>src\CopyGame.java</path>
 				<folder>src</folder>
 			</fileitem>
@@ -78,10 +86,6 @@
 			</fileitem>
 			<fileitem>
 				<path>src\Globs.java</path>
-				<folder>src</folder>
-			</fileitem>
-			<fileitem>
-				<path>src\import_cleaner.jar</path>
 				<folder>src</folder>
 			</fileitem>
 			<fileitem>

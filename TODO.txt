@@ -1,7 +1,6 @@
 Things to do and that aren't finished
 Last updated Febuary 9, 2010 at 9:47 PM
 
-Navigation meny
 Make Sure debug messages show up immediatly
 Make PeopleBrowser
 -Search list, list looks like facebook chat

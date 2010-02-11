@@ -49,6 +49,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.MultiSplitLayout;
+
 import org.jdesktop.swingx.MultiSplitLayout.Node;
 
 import org.json.me.JSONArray;
