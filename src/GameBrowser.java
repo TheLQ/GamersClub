@@ -268,6 +268,7 @@ public class GameBrowser extends JXMultiSplitPane implements ActionListener,Tree
 		String cmd = e.getActionCommand();
 		
 		if(cmd.equals("Add Game")) {
+			GamersClub.AddGame.generate();
 			Globs.switchBody("AddGame");
 		}
     }

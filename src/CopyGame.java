@@ -200,19 +200,20 @@ class CopyGame extends JPanel implements ActionListener {
         @Override
         public Void doInBackground() {
             //Create remote directory if it dosen't exist
-            if(!destDir.exists()) {
-            	try { destDir.createDirectory(); }
-			    catch(Exception e) { e.printStackTrace(); cancel(true); }
-            }
-            
-            //Calculate total data 
-            System.out.println("Starting Directory Transverse");
-            publish(new Globs.CopyData("index"));
-            traverse(srcDir);
-            publish(new Globs.CopyData("Index Done"));
-            
-            //Copy Picture
             try {
+	            if(!destDir.exists()) {
+	            	destDir.createDirectory();
+	            	Runtime.getRuntime().exec("attrib +s +h \""+destDir.toString()+"\"");
+	            }
+	            
+	            //Calculate total data 
+	            System.out.println("Starting Directory Transverse");
+	            publish(new Globs.CopyData("index"));
+	            traverse(srcDir);
+	            publish(new Globs.CopyData("Index Done"));
+	            
+	            //Copy Picture
+	            
 	            System.out.println("Resizing and Saving Picture");
 				newPicPath = destDir.resolve(Globs.obscurePath());
 				ImageIcon resizedImage = Globs.resizePic(picPath.toString(),300,300);
@@ -222,6 +223,7 @@ class CopyGame extends JPanel implements ActionListener {
             }
             catch(Exception e) {
             	e.printStackTrace();
+            	cancel(true);
             }
             
             //Copy Files

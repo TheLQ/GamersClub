@@ -62,6 +62,7 @@ public class MainMenu extends JPanel implements ActionListener {
     		JOptionPane.showMessageDialog(null,"Sorry, no options yet. If you want one, just tell Leon");
     	}
     	else if(cmd.equals("Add Game")) {
+    		GamersClub.AddGame.generate();
     		Globs.switchBody("AddGame");
     	}
     	
