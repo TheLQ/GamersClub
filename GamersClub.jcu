@@ -27,63 +27,36 @@
 				<path>src\org\json\me\util</path>
 			</folderitem>
 			<folderitem>
+				<path>src\java</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio\file</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio\file\spi</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio\channels</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio\channels\spi</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\net</path>
+			</folderitem>
+			<folderitem>
 				<path>jars</path>
 			</folderitem>
 		</project>
 	</projects>
 	<open_files>
 		<docitem>
-			<path>src\Globs.java</path>
-			<source>true</source>
-			<index>0</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\GamersClub.java</path>
-			<source>true</source>
-			<index>1</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\MainMenu.java</path>
-			<source>true</source>
-			<index>2</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\GameBrowser.java</path>
-			<source>true</source>
-			<index>3</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\Profile.java</path>
-			<source>true</source>
-			<index>4</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
 			<path>TODO.txt</path>
 			<source>true</source>
-			<index>5</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\CopyGame.java</path>
-			<source>true</source>
-			<index>6</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\build.xml</path>
-			<source>true</source>
-			<index>7</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\PeopleBrowser.java</path>
-			<source>true</source>
-			<index>8</index>
+			<index>0</index>
 			<active>true</active>
 		</docitem>
 	</open_files>

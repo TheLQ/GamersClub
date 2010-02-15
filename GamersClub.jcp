@@ -6,7 +6,7 @@
 		<root_path>\</root_path>
 		<output_path>classes\</output_path>
 		<source_path>src\</source_path>
-		<jdkprofile_ref>JDK version 1.7.0</jdkprofile_ref>
+		<jdkprofile_ref>JDK version 1.6.0_18</jdkprofile_ref>
 		<compiler_ref>&lt;Default&gt;</compiler_ref>
 		<ant_ref/>
 	</settings>
@@ -51,6 +51,27 @@
 				<path>src\org\json\me\util</path>
 			</folderitem>
 			<folderitem>
+				<path>src\java</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio\file</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio\file\spi</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio\channels</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\nio\channels\spi</path>
+			</folderitem>
+			<folderitem>
+				<path>src\java\net</path>
+			</folderitem>
+			<folderitem>
 				<path>jars</path>
 			</folderitem>
 			<fileitem>
@@ -66,6 +87,14 @@
 			</fileitem>
 			<fileitem>
 				<path>src\cleanImports.jar</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\ComponentTitledBorder.java</path>
+				<folder>src</folder>
+			</fileitem>
+			<fileitem>
+				<path>src\CompTitledBorder.java</path>
 				<folder>src</folder>
 			</fileitem>
 			<fileitem>

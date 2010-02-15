@@ -1,4 +1,6 @@
 "C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\AddGame.java"
+"C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\ComponentTitledBorder.java"
+"C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\CompTitledBorder.java"
 "C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\CopyGame.java"
 "C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\GameBrowser.java"
 "C:\\Documents and Settings\\Lord.Quackstar\\Desktop\\GamersClub\\src\\GamersClub.java"

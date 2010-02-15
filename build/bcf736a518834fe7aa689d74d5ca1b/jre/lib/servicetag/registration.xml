@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<registration_data version="1.0">
+   <environment>
+      <hostname>quacktop</hostname>
+      <hostId/>
+      <osName>Windows XP</osName>
+      <osVersion>5.1</osVersion>
+      <osArchitecture>x86</osArchitecture>
+      <systemModel>Satellite M45</systemModel>
+      <systemManufacturer>TOSHIBA</systemManufacturer>
+      <cpuManufacturer>GenuineIntel</cpuManufacturer>
+      <serialNumber>65081388Q</serialNumber>
+   </environment>
+   <registry urn="urn:st:af22d292-ada4-4b37-9085-4ba64de991df" version="1.0">
+      <service_tag>
+         <instance_urn>urn:st:33e7dd38-0c8c-4d7e-9bc6-002fa0a0ef5e</instance_urn>
+         <product_name>Java SE 7 Development Kit</product_name>
+         <product_version>1.7.0-ea</product_version>
+         <product_urn>JSEZ9-007-ZZZZ</product_urn>
+         <product_parent_urn>urn:uuid:dc1704fe-264f-11dc-9482-080020a9ed93</product_parent_urn>
+         <product_parent>Java Platform Standard Edition 7 (Java SE 7)</product_parent>
+         <product_defined_inst_id>id=1.7.0-ea-b83 x86,dir=C:\Program Files\Java\jdk1.7.0\jre</product_defined_inst_id>
+         <product_vendor>Sun Microsystems</product_vendor>
+         <platform_arch>x86</platform_arch>
+         <timestamp>2010-02-15 03:12:07 GMT</timestamp>
+         <container>global</container>
+         <source>Windows JDK i586 installer</source>
+         <installer_uid>-1</installer_uid>
+      </service_tag>
+   </registry>
+</registration_data>

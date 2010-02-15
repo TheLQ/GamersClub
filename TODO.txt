@@ -4,7 +4,6 @@ Last updated Febuary 9, 2010 at 9:47 PM
 Make Sure debug messages show up immediatly
 DB talk on seperate thread
 Encrypted DB talk - low priority
-Java 1.6 compatability - HUGE PRIORITY
 Passwords for users
 
 
