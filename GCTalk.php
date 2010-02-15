@@ -191,11 +191,21 @@ switch($MODE) {
 	case "reportProfile":
 		$userId = mysql_real_escape_string($_GET['userid']);
 		
-		$query = mysql_query("SELECT * FROM users WHERE counter = '$userId'");
+		$query = mysql_query("SELECT * FROM users WHERE counter = '$userId'") or die("MYSQL ERROR: ".mysql_error());
 		if(mysql_num_rows($query) == 0)
 			die("User ID Invalid");
 		
 		echo json_encode(mysql_fetch_array($query));
+	break;
+	
+	//List all users for PeopleBrowser
+	case "fetchUsers":
+		$query = mysql_query("SELECT * FROM users") or die("MYSQL ERROR: ".mysql_error());
+		$output = array();
+		while($result=mysql_fetch_assoc($query)) {
+			$output[$result['gamersTag']] = json_encode($result);
+		}
+		echo json_encode($output);
 	break;
 	
 	//No mode exists!

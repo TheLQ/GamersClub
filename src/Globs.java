@@ -26,10 +26,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+
+import java.lang.reflect.Array;
 
 public class Globs {
 	public static JComponent setSize(JComponent comp, int height, int width) {
@@ -113,6 +118,14 @@ public class Globs {
 	}
 	public static Path obscurePath() {
 		return Paths.get(UUID.randomUUID().toString().replace("-","")); //Huge generated string
+	}
+	public static Object[] mergeArrays(Object[]... arrays) {
+		List list = new ArrayList();
+		
+		for( Object[] array : arrays )
+			list.addAll( Arrays.asList( array ) );
+		
+		return (Object[]) Array.newInstance( arrays[0][0].getClass(), list.size() );
 	}
 	
 	public static class CopyData {

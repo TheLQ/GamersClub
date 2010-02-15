@@ -57,45 +57,33 @@
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\AddGame.java</path>
+			<path>src\Profile.java</path>
 			<source>true</source>
 			<index>4</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\CopyGame.java</path>
+			<path>TODO.txt</path>
 			<source>true</source>
 			<index>5</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\PasteGame.java</path>
+			<path>src\CopyGame.java</path>
 			<source>true</source>
 			<index>6</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>src\Profile.java</path>
+			<path>src\build.xml</path>
 			<source>true</source>
 			<index>7</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
-			<path>TODO.txt</path>
+			<path>src\PeopleBrowser.java</path>
 			<source>true</source>
 			<index>8</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\build.xml</path>
-			<source>true</source>
-			<index>9</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
-			<path>src\ComponentTitledBorder.java</path>
-			<source>true</source>
-			<index>10</index>
 			<active>true</active>
 		</docitem>
 	</open_files>

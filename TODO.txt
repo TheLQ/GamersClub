@@ -13,3 +13,6 @@ Setup Admin System
 DB talk on seperate thread
 Encrypted DB talk - low priority
 Java 1.6 compatability - HUGE PRIORITY
+
+
+FIX: Close file handles!!!!

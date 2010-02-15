@@ -69,10 +69,6 @@
 				<folder>src</folder>
 			</fileitem>
 			<fileitem>
-				<path>src\ComponentTitledBorder.java</path>
-				<folder>src</folder>
-			</fileitem>
-			<fileitem>
 				<path>src\CopyGame.java</path>
 				<folder>src</folder>
 			</fileitem>
