@@ -379,8 +379,10 @@ class CopyGame extends JPanel implements ActionListener {
 			    
 			    realDestFile = destDir.resolve(relativeDest); //Obtain absolute destination file by combining relativeFile and obscParent
 				try {
-					FileChannel in = new FileInputStream(file.toString()).getChannel();
-	        		FileChannel out = new FileOutputStream(realDestFile.toString()).getChannel();
+					FileInputStream inStream = new FileInputStream(file.toString());
+					FileChannel in = inStream.getChannel();
+					FileOutputStream outStream = new FileOutputStream(realDestFile.toString());
+	        		FileChannel out = outStream.getChannel();
 			       	long size = in.size();
 			       	long presize = 0;
 			       	long position = 0;
@@ -409,6 +411,8 @@ class CopyGame extends JPanel implements ActionListener {
 	                    // publish current progress data for copy task
 	                    publish(current);
 			    	}
+			    	inStream.close();
+			    	outStream.close();
 			        out.close();
 			        in.close();
 				}

@@ -233,8 +233,10 @@ class PasteGame extends JPanel implements ActionListener {
 					Path realDestFile = destDir.resolve(relativeDestFile);
 					
 					//Copy the file
-					FileChannel in = new FileInputStream(relativeSrcFile.toString()).getChannel();
-	        		FileChannel out = new FileOutputStream(realDestFile.toString()).getChannel();
+					FileInputStream inStream = new FileInputStream(relativeSrcFile.toString());
+					FileChannel in = inStream.getChannel();
+					FileOutputStream outStream = new FileOutputStream(realDestFile.toString());
+	        		FileChannel out = outStream.getChannel();
 			       	long size = in.size();
 			       	long presize = 0;
 			       	long position = 0;
@@ -250,6 +252,10 @@ class PasteGame extends JPanel implements ActionListener {
 	                    setProgress(progress);
 	                    publish(current);
 					}
+					inStream.close();
+			    	outStream.close();
+			        out.close();
+			        in.close();
 				}
 			}
 			catch(Exception e) {
