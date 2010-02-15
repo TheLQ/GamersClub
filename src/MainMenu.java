@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JOptionPane;
 
 public class MainMenu extends JPanel implements ActionListener {
 	
@@ -24,7 +26,10 @@ public class MainMenu extends JPanel implements ActionListener {
 		add(buttonMake("List People"));
 		add(buttonMake("Profile"));
 		add(buttonMake("Options"));
-		add(buttonMake("Help"));
+		if(GamersClub.admin) {
+    		add(Globs.setSize(new JSeparator(),10,0));
+    		add(buttonMake("Add Game"));
+    	}
 		
 		revalidate(); // this GUI needs relayout
         repaint();
@@ -54,10 +59,11 @@ public class MainMenu extends JPanel implements ActionListener {
     		Globs.switchBody("Profile");
     	}
     	else if(cmd.equals("Options")) {
-    		
+    		JOptionPane.showMessageDialog(null,"Sorry, no options yet. If you want one, just tell Leon");
     	}
-    	else if(cmd.equals("Help")) {
-    		
+    	else if(cmd.equals("Add Game")) {
+    		Globs.switchBody("AddGame");
     	}
+    	
     }
 }

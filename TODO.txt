@@ -2,9 +2,6 @@ Things to do and that aren't finished
 Last updated Febuary 9, 2010 at 9:47 PM
 
 Make Sure debug messages show up immediatly
-Make PeopleBrowser
--Search list, list looks like facebook chat
--Profile looks like phpBB2
 Make Options
 -Colors
 -Say not much here yet

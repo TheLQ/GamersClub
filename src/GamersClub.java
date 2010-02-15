@@ -58,12 +58,6 @@ import javax.swing.text.StyledDocument;
 import org.json.me.JSONException;
 import org.json.me.JSONObject;
 
-//import javax.swing.border.TitledBorder;
-
-
-
-
- 
 public class GamersClub extends JFrame implements ActionListener {
     JPanel contentPane;
     public static JPanel bodyPanel;
