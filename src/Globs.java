@@ -19,22 +19,22 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 
+import java.lang.reflect.Array;
+
 import java.net.URL;
 import java.net.URLConnection;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import java.util.UUID;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-
-import java.lang.reflect.Array;
 
 public class Globs {
 	public static JComponent setSize(JComponent comp, int height, int width) {

@@ -6,9 +6,17 @@
  * @version 1.00 2010/2/10
  */
 
-import javax.swing.border.*;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Rectangle;
+
+import javax.swing.JComponent;
+
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 class CompTitledBorder extends TitledBorder {
   protected JComponent component;

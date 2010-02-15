@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -36,18 +36,8 @@ import javax.swing.JTextPane;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
-
-import javax.swing.plaf.metal.DefaultMetalTheme;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.metal.MetalTheme;
-import javax.swing.plaf.metal.OceanTheme;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;

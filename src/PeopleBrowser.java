@@ -5,19 +5,48 @@
  *
  * @author Leon Blakey/Lord.Quackstar
  */
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-import javax.swing.*;
-import java.awt.*;
-import javax.swing.table.*;
-import javax.swing.event.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.plaf.basic.BasicTextFieldUI;
-import javax.swing.text.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.Vector;
 
-import org.json.me.*;
+import java.util.Map.Entry;
+
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MouseInputAdapter;
+
+import javax.swing.table.TableCellRenderer;
+
+import javax.swing.text.View;
+
+import org.json.me.JSONException;
+import org.json.me.JSONObject;
 
 class PeopleBrowser extends JSplitPane implements ActionListener, ListSelectionListener {
 	
