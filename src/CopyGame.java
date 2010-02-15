@@ -219,7 +219,7 @@ class CopyGame extends JPanel implements ActionListener {
 				ImageIcon resizedImage = Globs.resizePic(picPath.toString(),300,300);
 	            BufferedImage resizedBImage = new BufferedImage (resizedImage.getIconWidth(), resizedImage.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 				resizedBImage.getGraphics().drawImage(resizedImage.getImage(), 0 , 0, null);
-				ImageIO.write(resizedBImage, "png",new File(newPicPath.toString())); 
+				ImageIO.write(resizedBImage, "png",new File(GamersClub.avatarDir+"/"+newPicPath.toString())); 
             }
             catch(Exception e) {
             	e.printStackTrace();

@@ -89,7 +89,7 @@ public class Profile extends JPanel implements ActionListener {
 		
 		//Game Section
 		builder.appendSeparator("Avatar");
-		String avatarLoc = (GamersClub.avatar == "NULL") ? "no_avatar.gif" : GamersClub.avatar;
+		String avatarLoc = (GamersClub.avatar == "NULL") ? "no_avatar.gif" : GamersClub.avatarDir+"/"+GamersClub.avatar;
 		ImageIcon avatarIcon = Globs.resizePic(avatarLoc,200,200);
 		JLabel avatarLabel = new JLabel(avatarIcon);
         builder.append(avatarLabel,7);
@@ -179,7 +179,7 @@ public class Profile extends JPanel implements ActionListener {
 				if(GamersClub.avatar != JSONObject.NULL && browseField.getText().equals("")) {
 					formData.put("avatar",JSONObject.NULL );
 				}
-				else if(!browseField.getText().equals("")) {
+				else if(!browseField.getText().equals("") || GamersClub.avatar == null) {
 					String newName = Globs.obscurePath().toString();
 					formData.put("avatar",newName);
 					
@@ -188,7 +188,7 @@ public class Profile extends JPanel implements ActionListener {
 					ImageIcon resizedImage = new ImageIcon(browseField.getText());
 		            BufferedImage resizedBImage = new BufferedImage (resizedImage.getIconWidth(), resizedImage.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 					resizedBImage.getGraphics().drawImage(resizedImage.getImage(), 0 , 0, null);
-					ImageIO.write(resizedBImage, "png",new File(newName)); 
+					ImageIO.write(resizedBImage, "png",new File(GamersClub.avatarDir+"/"+newName)); 
 				}	
 				
 				String data = URLEncoder.encode("data", "UTF-8") + "=" + URLEncoder.encode(formData.toString(), "UTF-8"); 

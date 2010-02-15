@@ -133,7 +133,7 @@ class PeopleBrowser extends JSplitPane implements ActionListener, ListSelectionL
 		TreeMap<String,String> curUsr = userInfo.get(userName);
 		
 		//Show avatar
-		ImageIcon avatar = (curUsr.get("avatar") == null || curUsr.get("avatar").isEmpty()) ? new ImageIcon("no_avatar.gif") : Globs.resizePic((String)curUsr.get("avatar"),200,200);
+		ImageIcon avatar = (curUsr.get("avatar") == null || curUsr.get("avatar").isEmpty()) ? new ImageIcon(GamersClub.avatarDir+"/no_avatar.gif") : Globs.resizePic(GamersClub.avatarDir+"/"+(String)curUsr.get("avatar"),200,200);
 		JLabel avatarL = new JLabel(avatar,JLabel.CENTER);
 		Dimension size = new Dimension(avatar.getIconWidth(),avatar.getIconHeight());
 		avatarL.setPreferredSize(size);

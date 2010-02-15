@@ -69,6 +69,7 @@ public class GamersClub extends JFrame implements ActionListener {
     /***Static User Info***/
     public static String username, uid, realName, gamersTag, grade, bestAt, favGame, avatar, desc, userid;
     public static Boolean admin;
+    public static String avatarDir = "4242f83ae1ed41dd9e3b4d75037d7079";
     
 	public GamersClub () {
 		/***Pre init, make error logs so future commands are happy***/
