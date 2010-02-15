@@ -36,6 +36,7 @@ import javax.swing.JTextPane;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.JPasswordField;
 
 import javax.swing.border.Border;
 
@@ -44,6 +45,12 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+import java.security.MessageDigest;
+
+import java.math.BigInteger;
+
+import java.util.Arrays;
 
 import org.json.me.JSONException;
 import org.json.me.JSONObject;
@@ -102,11 +109,21 @@ public class GamersClub extends JFrame implements ActionListener {
 
        	
        	/***Check if user exists***/
-       	System.out.println("System user account: "+System.getProperty("user.name")+", checking with database");
-		String response = Globs.webTalk("mode=userExists&user="+System.getProperty("user.name"),null,null);
-		JSONObject dbInfo = null;
-		System.out.println("Response: "+response);
-		try{
+       	JPasswordField jpf = new JPasswordField();
+		JOptionPane.showConfirmDialog(null, jpf, "Password:", JOptionPane.OK_CANCEL_OPTION);
+		String response = null;
+		String encodedPass = null;
+		try {
+			String pass = new String(jpf.getPassword());
+			encodedPass = Globs.makeMD5(pass);
+	
+			System.out.println("Password: "+pass+" | Encoded: "+encodedPass);
+	
+	       	System.out.println("System user account: "+System.getProperty("user.name")+", checking with database");
+			response = Globs.webTalk("mode=userExists&user="+System.getProperty("user.name")+"&pass="+encodedPass,null,null);
+			JSONObject dbInfo = null;
+			System.out.println("Response: "+response);
+		
 			dbInfo = new JSONObject(response);
 			uid = (String)dbInfo.get("counter");
 			username = (String)dbInfo.get("username");
@@ -131,6 +148,31 @@ public class GamersClub extends JFrame implements ActionListener {
 			else if(response.equals("disabled")) {
 				JOptionPane.showMessageDialog(null,"Account is disabled");
 				System.exit(0);
+			}
+			else if(response.equals("wrong")) {
+				JOptionPane.showMessageDialog(null,"Wrong Password");
+				System.exit(0);
+			}
+			else if(response.equals("none")) {
+				JLabel label1 = new JLabel("Password");
+				JPasswordField pass1 = new JPasswordField();
+				JLabel label2 = new JLabel("Confirm");
+				JPasswordField pass2 = new JPasswordField();
+				boolean correct = false;
+				while(correct == false) {
+					int selection = JOptionPane.showConfirmDialog(null,new Object[]{label1, pass1, label2, pass2}, "You have not set a password yet!",JOptionPane.OK_CANCEL_OPTION);
+    				if (selection == JOptionPane.CANCEL_OPTION || selection == JOptionPane.CLOSED_OPTION)
+    					System.exit(0);
+    				if (!(Arrays.equals(pass1.getPassword(),pass2.getPassword()))) { 
+    					JOptionPane.showMessageDialog(null,"Passwords do not match, please try again");
+    					continue;
+    				}
+    				Globs.webTalk("mode=newPass&user="+System.getProperty("user.name")+"&pass="+Globs.makeMD5(new String(pass1.getPassword())),null,"Successs");
+    				
+    				//everything is fine,restart process
+    				JOptionPane.showMessageDialog(null,"Password updated. Please restart program");
+    				return;
+				}
 			}
 			else {
 				JOptionPane.showMessageDialog(null,"<HTML>ERROR: Initial check, Either garbage for input or website dosen't exist!<br>"+e.getMessage()+"</HTML>");
@@ -263,6 +305,10 @@ public class GamersClub extends JFrame implements ActionListener {
 
     
     public static void main(String[] args) {
-		new GamersClub(); //simply start gamersclub
+    	javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new GamersClub(); //simply start gamersclub
+            }
+        });
     }
 }

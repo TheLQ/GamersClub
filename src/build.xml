@@ -45,8 +45,15 @@
 		</jar>
 	</target>
 	
-	<target name="execute" depends="deploy" description="run the project">
-		<exec executable="build/GamersClub.exe"/>
+	<target name="execute_jar" description="run the project">
+		<exec dir="build/" executable="./build/bcf736a518834fe7aa689d74d5ca1b/bin/java  ">
+		    <arg value="-jar"/>
+		    <arg value="bcf736a518834fe7aa689d74d5ca1b/bin/GamersClub.jar"/>
+		</exec>
+	</target>
+	
+	<target name="execute_exe" description="run the project">
+		<exec dir="build/" executable="./build/GamersClub.exe"/>
 	</target>
 
   

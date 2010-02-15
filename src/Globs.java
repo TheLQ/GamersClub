@@ -36,6 +36,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
+import java.security.MessageDigest;
+
+import java.math.BigInteger;
+
 public class Globs {
 	public static JComponent setSize(JComponent comp, int height, int width) {
      	Dimension size = comp.getMaximumSize();
@@ -126,6 +130,20 @@ public class Globs {
 			list.addAll( Arrays.asList( array ) );
 		
 		return (Object[]) Array.newInstance( arrays[0][0].getClass(), list.size() );
+	}
+	
+	public static String makeMD5(String unenc) {
+		String enc = null;
+		try {
+			MessageDigest m = MessageDigest.getInstance("MD5");
+			byte[] data = unenc.getBytes(); 
+			m.update(data,0,data.length);
+			enc = String.format("%1$032X", new BigInteger(1,m.digest()));
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return enc;
 	}
 	
 	public static class CopyData {

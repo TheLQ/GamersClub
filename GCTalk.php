@@ -14,19 +14,32 @@ $MODE = $_GET['mode'];
 switch($MODE) {
 	//Is this trying to see if the user is in gamers club?
 	case "userExists":
-		$user = $_GET['user'];
+		$user = mysql_real_escape_string($_GET['user']);
 		$query = mysql_query("SELECT * FROM users WHERE `username`='$user'") or die("MYSQL ERROR: "+mysql_error());
 		$numRows = mysql_num_rows($query);
 		$result = mysql_fetch_assoc($query);
 		if($numRows == 0) {
 			//user dosen't exist, return false
-			echo "false";
+			die("false");
+		}
+		else if(empty($result['password']) || $result['password'] == null) {
+			die("none");
 		}
 		else if($result['disabled'] == "1") {
-			echo "disabled";
+			die("disabled");
+		}
+		else if(strcasecmp($result['password'],$_GET['pass'])) {
+			die("wrong");
 		}
 		else
 			echo json_encode($result);
+	break;
+	
+	case "newPass":
+		$pass = mysql_real_escape_string($_GET['pass']);
+		$user = mysql_real_escape_string($_GET['user']);
+		mysql_query("UPDATE users SET password = '$pass' WHERE username = '$user'") or die("MYSQL ERROR: "+mysql_error());
+		echo "Successs";
 	break;
 	
 	//Is this a gameBrowse tree build request?

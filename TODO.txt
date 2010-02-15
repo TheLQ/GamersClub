@@ -4,7 +4,3 @@ Last updated Febuary 9, 2010 at 9:47 PM
 Make Sure debug messages show up immediatly
 DB talk on seperate thread
 Encrypted DB talk - low priority
-Passwords for users
-
-
-FIX: Close file handles!!!!
