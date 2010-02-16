@@ -79,7 +79,8 @@ public class Globs {
 		String allLine = "";
 		try {
 			String enc_url = crypto.encode(url);
-			URL ourURL = new URL("http://localhost:80/GamersClub/GCTalk.php?edata="+enc_url);
+			//URL ourURL = new URL("http://localhost:80/GamersClub/GCTalk.php?edata="+enc_url);
+			URL ourURL = new URL("http://evilxproductions.net/GamersClub/GCTalk.php?edata="+enc_url);
 			System.out.println("Visiting url: "+url);
 	    	URLConnection conn = ourURL.openConnection();
 	    	

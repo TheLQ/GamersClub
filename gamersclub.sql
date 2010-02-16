@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 14, 2010 at 11:41 PM
+-- Generation Time: Feb 16, 2010 at 12:27 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -25,6 +25,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `dirlist`
 --
 
+DROP TABLE IF EXISTS `dirlist`;
 CREATE TABLE IF NOT EXISTS `dirlist` (
   `counter` int(2) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -47,6 +48,7 @@ INSERT INTO `dirlist` (`counter`, `name`, `folder`, `gameID`, `byteSize`) VALUES
 -- Table structure for table `filelist`
 --
 
+DROP TABLE IF EXISTS `filelist`;
 CREATE TABLE IF NOT EXISTS `filelist` (
   `Counter` int(100) NOT NULL AUTO_INCREMENT,
   `Source` varchar(255) DEFAULT NULL,
@@ -292,6 +294,7 @@ INSERT INTO `filelist` (`Counter`, `Source`, `Dest`, `type`, `folderID`) VALUES
 -- Table structure for table `games`
 --
 
+DROP TABLE IF EXISTS `games`;
 CREATE TABLE IF NOT EXISTS `games` (
   `counter` int(2) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -317,6 +320,7 @@ INSERT INTO `games` (`counter`, `name`, `desc`, `type`, `picture`, `addDate`, `c
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(40) DEFAULT NULL,
   `admin` tinyint(1) DEFAULT NULL,
@@ -329,6 +333,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `favGames` mediumtext,
   `desc` mediumtext,
   `disabled` int(1) DEFAULT NULL,
+  `password` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`counter`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
@@ -336,9 +341,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`username`, `admin`, `name`, `counter`, `avatar`, `gamersTag`, `gradeNum`, `bestAt`, `favGames`, `desc`, `disabled`) VALUES
-('Owner', 1, 'Susan Blakey', 4, NULL, 'Lord.Mom', NULL, NULL, NULL, NULL, NULL),
-('Lord.Quackstar', 1, 'LordQuackstar', 6, '69983a41e0754e5e8ec72893619b099a', 'Lord.Quackstar', 12, 'Shooting, Spray and Pray, Hording', 'Halo, Rise of Nations, Starcraft', 'I run Gamers Club, am a good programmer, and like doing crap', 0);
+INSERT INTO `users` (`username`, `admin`, `name`, `counter`, `avatar`, `gamersTag`, `gradeNum`, `bestAt`, `favGames`, `desc`, `disabled`, `password`) VALUES
+('Owner', 1, 'Susan Blakey', 4, NULL, 'Lord.Mom', NULL, NULL, NULL, NULL, NULL, NULL),
+('Lord.Quackstar', 1, 'LordQuackstar', 6, '69983a41e0754e5e8ec72893619b099a', 'Lord.Quackstar', 12, 'Shooting, Spray and Pray, Hording', 'Halo, Rise of Nations, Starcraft', 'I run Gamers Club, am a good programmer, and like doing crap', 0, 'FEA0F1F6FEDE90BD0A925B4194DEAC11');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -3,11 +3,8 @@
  *Database middle man by Leon Blakey
  ******/
  
- include('Crypto.php');
- 
-//connect to database
-mysql_connect("localhost","root","") or die("MYSQL ERROR: "+mysql_error());
-mysql_select_db("GamersClub") or die("MYSQL ERROR: "+mysql_error());
+include('Crypto.php');
+include('DBCred.php');
 
 $raw_get = decrypt_text($_GET['edata']);
 mb_parse_str($raw_get,$_GET);
