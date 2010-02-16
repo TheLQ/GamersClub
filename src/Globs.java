@@ -78,15 +78,16 @@ public class Globs {
 	public static String webTalk(String url,String postVars,String lookFor) {
 		String allLine = "";
 		try {
-			URL ourURL = new URL("http://localhost:80/GamersClub/GCTalk.php?"+url);
-			System.out.println("Visiting url: http://localhost:80/GamersClub/GCTalk.php?"+url);
+			String enc_url = crypto.encode(url);
+			URL ourURL = new URL("http://localhost:80/GamersClub/GCTalk.php?edata="+enc_url);
+			System.out.println("Visiting url: "+url);
 	    	URLConnection conn = ourURL.openConnection();
 	    	
 	    	conn.setDoOutput(true);
 	    	OutputStreamWriter wr = null;
 	    	if(postVars != null) {
 	    		wr = new OutputStreamWriter(conn.getOutputStream());
-		    	wr.write(postVars);
+		    	wr.write("edata="+crypto.encode(postVars));
 	    		wr.flush();
 	    	}
 	    	
@@ -98,7 +99,13 @@ public class Globs {
 	    	if(postVars != null)
 	    		wr.close();
 	    	rd.close();
-	    	allLine = allLine.trim();
+	    	if(allLine == crypto.decode(allLine.trim())) {
+	    		System.err.println("They Match!!");
+	    		System.exit(0);
+	    	}
+	    	else {
+	    		allLine = crypto.decode(allLine.trim());
+	    	}
 		}
 		catch(Exception e) {
 			e.printStackTrace();

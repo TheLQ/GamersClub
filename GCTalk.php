@@ -3,14 +3,29 @@
  *Database middle man by Leon Blakey
  ******/
  
+ include('Crypto.php');
+ 
 //connect to database
 mysql_connect("localhost","root","") or die("MYSQL ERROR: "+mysql_error());
 mysql_select_db("GamersClub") or die("MYSQL ERROR: "+mysql_error());
 
+$raw_get = decrypt_text($_GET['edata']);
+mb_parse_str($raw_get,$_GET);
+
+if(isset($_POST['edata'])) {
+	$raw_post = decrypt_text($_POST['edata']);
+	mb_parse_str($raw_post,$_POST);
+}
+	
 if(!isset($_GET['mode']))
 	die('No mode specified or not found');
 
+function send($string) {
+	encrypt_text($string);
+}
+	
 $MODE = $_GET['mode'];
+
 switch($MODE) {
 	//Is this trying to see if the user is in gamers club?
 	case "userExists":
@@ -20,31 +35,31 @@ switch($MODE) {
 		$result = mysql_fetch_assoc($query);
 		if($numRows == 0) {
 			//user dosen't exist, return false
-			die("false");
+			die(encrypt_text("false"));
 		}
 		else if(empty($result['password']) || $result['password'] == null) {
-			die("none");
+			die(encrypt_text("none"));
 		}
 		else if($result['disabled'] == "1") {
-			die("disabled");
+			die(encrypt_text("disabled"));
 		}
 		else if(strcasecmp($result['password'],$_GET['pass'])) {
-			die("wrong");
+			die(encrypt_text("wrong, pass: ".$_GET['pass']));
 		}
 		else
-			echo json_encode($result);
+			echo encrypt_text(json_encode($result));
 	break;
 	
 	case "newPass":
 		$pass = mysql_real_escape_string($_GET['pass']);
 		$user = mysql_real_escape_string($_GET['user']);
 		mysql_query("UPDATE users SET password = '$pass' WHERE username = '$user'") or die("MYSQL ERROR: "+mysql_error());
-		echo "Successs";
+		echo encrypt_text("Successs");
 	break;
 	
 	//Is this a gameBrowse tree build request?
 	case "buildTree":
-		$data = array();		
+		$data = array();
 		$typeQuery = mysql_query("SELECT DISTINCT type FROM games") or die("MYSQL ERROR: "+mysql_error()); //obtain all game types
 		while($typeResult = mysql_fetch_array($typeQuery)) {
 			$type = $typeResult['type'];
@@ -60,7 +75,7 @@ switch($MODE) {
 				
 			}
 		}
-		echo json_encode($data);
+		echo encrypt_text(json_encode($data));
 	break;
 	
 	case "getTypes":
@@ -74,18 +89,17 @@ switch($MODE) {
 		}
 		$counter++;
 		$type["$counter s"] = "Select One";
-		echo json_encode($type);
+		echo encrypt_text(json_encode($type));
 	break;
 	
 	//Is this PasteGame wanting a big file list
 	case "makeGameFileList":
-		$folderName = $_GET['folderName'];
-		
+		$folderName = mysql_real_escape_string($_GET['folderName']);
 		
 		//Get the folderID of the game folder
 		$folderQuery = mysql_query("SELECT * FROM `dirlist` WHERE `folder`='$folderName'") or die("MYSQL ERROR: "+mysql_error());
 		if(mysql_num_rows($folderQuery) != 1)
-			die("MYSQL Error: Folder matches "+mysql_num_rows($folderQuery)+" folders!");
+			die(encrypt_text("MYSQL Error: Folder matches "+mysql_num_rows($folderQuery)+" folders!"));
 		$folderArray = mysql_fetch_assoc($folderQuery);
 		$folderID = $folderArray['counter'];
 		
@@ -106,7 +120,7 @@ switch($MODE) {
 		$fileArray = json_encode($fileArray);
 		$dirArray = json_encode($dirArray);
 		$endArray = array("o1" => $fileArray, "o2" => $dirArray, "o3" => $folderArray['byteSize']);
-		echo json_encode($endArray);
+		echo encrypt_text(json_encode($endArray));
 	break;
 	
 	//Is this trying to add a game?
@@ -162,7 +176,7 @@ switch($MODE) {
 		$values = substr($values,0,-1);
 		mysql_query("INSERT INTO fileList VALUES $values") or die("MYSQL ERROR: "+mysql_error());
 		
-		return "Sucess";
+		return encrypt_text("Sucess");
 	break;
 	
 	case "updateProfile":
@@ -198,7 +212,7 @@ switch($MODE) {
 		//.echo $query;
 		mysql_query($query) or die("MYSQL ERROR: ".mysql_error());
 		
-		echo "Sucess";
+		echo encrypt_text("Sucess");
 	break;
 	
 	case "reportProfile":
@@ -208,7 +222,7 @@ switch($MODE) {
 		if(mysql_num_rows($query) == 0)
 			die("User ID Invalid");
 		
-		echo json_encode(mysql_fetch_array($query));
+		echo encrypt_text(json_encode(mysql_fetch_array($query)));
 	break;
 	
 	//List all users for PeopleBrowser
@@ -218,7 +232,7 @@ switch($MODE) {
 		while($result=mysql_fetch_assoc($query)) {
 			$output[$result['gamersTag']] = json_encode($result);
 		}
-		echo json_encode($output);
+		echo encrypt_text(json_encode($output));
 	break;
 	
 	//No mode exists!
@@ -226,5 +240,6 @@ switch($MODE) {
 		die("Invalid Mode.");
 	break;
 }
+
 
 ?>
