@@ -159,12 +159,12 @@ public class Profile extends JPanel implements ActionListener {
 				bestAt.getText().equals("") ||
 				descPane.getText().equals("Type a description of yourself, favorite quotes, anything. Just watch the language.")) {
 				
-				JOptionPane.showMessageDialog(null,"Please finish filling out the form!");
+				JOptionPane.showMessageDialog(this,"Please finish filling out the form!");
 				return;	
 			}
 			
 			try {
-				JOptionPane.showMessageDialog(null,"This program will most likley freeze /n while copying submitting; this is normal. /n Attempting to exit, log off, or starting this program again will damage your profile");
+				JOptionPane.showMessageDialog(this,"This program will most likley freeze /n while copying submitting; this is normal. /n Attempting to exit, log off, or starting this program again will damage your profile");
 				
 				
 				//Send to database

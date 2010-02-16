@@ -158,7 +158,7 @@ class CopyGame extends JPanel implements ActionListener {
 	 *******************************************************************************************************/
 	public void config(String gameDir, String picPath, String gameName, Long gameDate, String gameDesc, String gameType, String uploadName) {
 		Globs.switchBody("CopyGame");
-		if(JOptionPane.showConfirmDialog(null, "Do you wish to start? \n NOTE: YOU CANNOT EXIT ONCE THE PROCESS IS STARTED!! \n MAKE SURE YOU HAVE ENOUGH TIME TO COPY THE GAME, ESPICALLY WITH LARGE ONE'S!!")!=JOptionPane.YES_OPTION) {
+		if(JOptionPane.showConfirmDialog(this, "Do you wish to start? \n NOTE: YOU CANNOT EXIT ONCE THE PROCESS IS STARTED!! \n MAKE SURE YOU HAVE ENOUGH TIME TO COPY THE GAME, ESPICALLY WITH LARGE ONE'S!!")!=JOptionPane.YES_OPTION) {
 			Globs.switchBody("AddGame");
 			return;
 		}
@@ -346,7 +346,7 @@ class CopyGame extends JPanel implements ActionListener {
                 Void result = get();
                 System.out.println("Copy operation completed.\n");
                 setBarProgress(100); //sometimes process isn't called to finish up, so...
-                JOptionPane.showMessageDialog(null,"Upload Complete! Press okay to continue");
+                JOptionPane.showMessageDialog(CopyGame.this,"Upload Complete! Press okay to continue");
                 GamersClub.GameBrowser.generate(); //regenerate menu
                 Globs.switchBody("GameBrowser");
             } catch (InterruptedException e) {

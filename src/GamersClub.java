@@ -18,6 +18,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.image.BufferedImage;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -49,6 +51,8 @@ import javax.swing.text.StyledDocument;
 import java.security.MessageDigest;
 
 import java.math.BigInteger;
+
+import javax.imageio.ImageIO;
 
 import java.util.Arrays;
 
@@ -96,9 +100,17 @@ public class GamersClub extends JFrame implements ActionListener {
 		System.setOut(new PrintStream(new FilteredStream(new ByteArrayOutputStream(),false)));
 		System.setErr(new PrintStream(new FilteredStream(new ByteArrayOutputStream(),true)));
       	System.out.println("Initializing");
+      	JFrame.setDefaultLookAndFeelDecorated(true);
       	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Will exit when close button is pressed
      	setTitle("Gamers Club Distrobution Service");
        	setMinimumSize(new Dimension(1000,700));
+       	BufferedImage image = null;
+        try {
+            image = ImageIO.read(getClass().getResource("GamersClubLogo.PNG"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setIconImage(image);
        	try {
       		UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
       		//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
@@ -110,7 +122,7 @@ public class GamersClub extends JFrame implements ActionListener {
        	
        	/***Check if user exists***/
        	JPasswordField jpf = new JPasswordField();
-		JOptionPane.showConfirmDialog(null, jpf, "Password:", JOptionPane.OK_CANCEL_OPTION);
+		JOptionPane.showConfirmDialog(this, jpf, "Password:", JOptionPane.OK_CANCEL_OPTION);
 		String response = null;
 		String encodedPass = null;
 		try {
@@ -142,15 +154,15 @@ public class GamersClub extends JFrame implements ActionListener {
 		catch(JSONException e) {
 			//must of false or garbage
 			if(response.equals("false")) {
-				JOptionPane.showMessageDialog(null,"You are not in the Gamers Club.");
+				JOptionPane.showMessageDialog(this,"You are not in the Gamers Club.");
 				System.exit(0);
 			}
 			else if(response.equals("disabled")) {
-				JOptionPane.showMessageDialog(null,"Account is disabled");
+				JOptionPane.showMessageDialog(this,"Account is disabled");
 				System.exit(0);
 			}
 			else if(response.equals("wrong")) {
-				JOptionPane.showMessageDialog(null,"Wrong Password");
+				JOptionPane.showMessageDialog(this,"Wrong Password");
 				System.exit(0);
 			}
 			else if(response.equals("none")) {
@@ -160,22 +172,22 @@ public class GamersClub extends JFrame implements ActionListener {
 				JPasswordField pass2 = new JPasswordField();
 				boolean correct = false;
 				while(correct == false) {
-					int selection = JOptionPane.showConfirmDialog(null,new Object[]{label1, pass1, label2, pass2}, "You have not set a password yet!",JOptionPane.OK_CANCEL_OPTION);
+					int selection = JOptionPane.showConfirmDialog(this,new Object[]{label1, pass1, label2, pass2}, "You have not set a password yet!",JOptionPane.OK_CANCEL_OPTION);
     				if (selection == JOptionPane.CANCEL_OPTION || selection == JOptionPane.CLOSED_OPTION)
     					System.exit(0);
     				if (!(Arrays.equals(pass1.getPassword(),pass2.getPassword()))) { 
-    					JOptionPane.showMessageDialog(null,"Passwords do not match, please try again");
+    					JOptionPane.showMessageDialog(this,"Passwords do not match, please try again");
     					continue;
     				}
     				Globs.webTalk("mode=newPass&user="+System.getProperty("user.name")+"&pass="+Globs.makeMD5(new String(pass1.getPassword())),null,"Successs");
     				
     				//everything is fine,restart process
-    				JOptionPane.showMessageDialog(null,"Password updated. Please restart program");
+    				JOptionPane.showMessageDialog(this,"Password updated. Please restart program");
     				return;
 				}
 			}
 			else {
-				JOptionPane.showMessageDialog(null,"<HTML>ERROR: Initial check, Either garbage for input or website dosen't exist!<br>"+e.getMessage()+"</HTML>");
+				JOptionPane.showMessageDialog(this,"<HTML>ERROR: Initial check, Either garbage for input or website dosen't exist!<br>"+e.getMessage()+"</HTML>");
 				System.exit(0);
 			}
 		}

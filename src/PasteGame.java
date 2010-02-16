@@ -148,7 +148,7 @@ class PasteGame extends JPanel implements ActionListener {
 		String gameDest = chooser.getSelectedFile().getAbsolutePath();
 		System.out.println("Dialog Selection: " + gameDest);
 		
-		if(JOptionPane.showConfirmDialog(null, "Do you wish to start? \n NOTE: YOU CANNOT EXIT ONCE THE PROCESS IS STARTED!! \n MAKE SURE YOU HAVE ENOUGH TIME TO COPY THE GAME, ESPICALLY WITH LARGE ONE'S!!")!=JOptionPane.YES_OPTION) {
+		if(JOptionPane.showConfirmDialog(this, "Do you wish to start? \n NOTE: YOU CANNOT EXIT ONCE THE PROCESS IS STARTED!! \n MAKE SURE YOU HAVE ENOUGH TIME TO COPY THE GAME, ESPICALLY WITH LARGE ONE'S!!")!=JOptionPane.YES_OPTION) {
 			Globs.switchBody("GameBrowser");
 			return;
 		}
@@ -305,7 +305,7 @@ class PasteGame extends JPanel implements ActionListener {
                 Void result = get();
                 System.out.println("Copy operation completed.\n");
                 setBarProgress(100); //sometimes process isn't called to finish up, so...
-                JOptionPane.showMessageDialog(null,"Download Complete! Press okay to continue");
+                JOptionPane.showMessageDialog(PasteGame.this,"Download Complete! Press okay to continue");
                 GamersClub.GameBrowser.generate(); //regenerate menu
                 Globs.switchBody("GameBrowser");
             } catch (InterruptedException e) {

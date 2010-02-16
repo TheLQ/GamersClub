@@ -189,7 +189,7 @@ class AddGame extends JPanel implements ActionListener {
         	String selected = (String)cb.getSelectedItem();
         	if(selected.equals("Custom")) {
         		System.out.println("Change in TypeBox, making sure typeCustom is enabled");
-        		JOptionPane.showMessageDialog(null,"IMPORTANT: This is an important part of the system. Keep it short, use acronyms, \nand make sure it is correct. It is very hard to fix broken types.");
+        		JOptionPane.showMessageDialog(this,"IMPORTANT: This is an important part of the system. Keep it short, use acronyms, \nand make sure it is correct. It is very hard to fix broken types.");
         		typeCustom.setEnabled(true);
         	}
         	else {
@@ -206,45 +206,45 @@ class AddGame extends JPanel implements ActionListener {
 			File srcDir = new File(gameDirPath.getText());
 			if(gameDirPath.getText().isEmpty()) {
 				System.out.println("Game Dir Path String "+gameDirPath.toString());
-				JOptionPane.showMessageDialog(null,"You must select the folder that the game is in!");
+				JOptionPane.showMessageDialog(this,"You must select the folder that the game is in!");
 				return;
 			}
         	else if (!(srcDir.exists() && (srcDir.listFiles() != null && srcDir.listFiles().length > 0))) {
-        		JOptionPane.showMessageDialog(null,"Selected Game Directory is empty!");
+        		JOptionPane.showMessageDialog(this,"Selected Game Directory is empty!");
 				return;
         	}
 			else if(picPath.getText().isEmpty()) {
-				JOptionPane.showMessageDialog(null,"You must select an image!");
+				JOptionPane.showMessageDialog(this,"You must select an image!");
 				return;
 			}
 			else if(gameName.getText().isEmpty() ) {
-				JOptionPane.showMessageDialog(null,"Name to short or not specified!");
+				JOptionPane.showMessageDialog(this,"Name to short or not specified!");
 				return;
 			}
 			else if((gameCreate.getText().length() != 10) || (gameCreate.getText().charAt(6) == '/') || (gameCreate.getText().charAt(3) == '/')) {
-				JOptionPane.showMessageDialog(null,"Must use correct date format!");
+				JOptionPane.showMessageDialog(this,"Must use correct date format!");
 				return;
 			}
 			else if(descPane.getText().equals("Type your description here. (Please try and use wikipedia)")) {
-				JOptionPane.showMessageDialog(null,"Must fill out a description! (Wikipedia and google are your friends)");
+				JOptionPane.showMessageDialog(this,"Must fill out a description! (Wikipedia and google are your friends)");
 				return;
 			}
 			else if(typeBox.getSelectedIndex() == 0) {
 				System.out.println("typeBox index num: "+typeBox.getSelectedIndex());
-				JOptionPane.showMessageDialog(null,"Must Select a game type");
+				JOptionPane.showMessageDialog(this,"Must Select a game type");
 				return;
 			}
 			else if(typeCustom.getText().equals("Custom") && typeBox.getSelectedIndex() == typeBox.getItemCount() ) {
 				System.out.println("typeBox index num: "+typeBox.getSelectedIndex());
-				JOptionPane.showMessageDialog(null,"Custom game type must have a name");
+				JOptionPane.showMessageDialog(this,"Custom game type must have a name");
 				return;
 			}
 			else if(uploadName.getText().isEmpty()) {
-				JOptionPane.showMessageDialog(null,"Upload name not specified!");
+				JOptionPane.showMessageDialog(this,"Upload name not specified!");
 				return;
 			}
 			try { date = formatter.parse(gameCreate.getText()); }
-			catch (Exception ex) { JOptionPane.showMessageDialog(null,"Must use correct date format! \nError:"+ex.toString()); return;}
+			catch (Exception ex) { JOptionPane.showMessageDialog(this,"Must use correct date format! \nError:"+ex.toString()); return;}
 			System.out.println(date.toString());
 			/***Form checking done, no errors, start copy***/
 			String type = (typeBox.getSelectedIndex() == typeBox.getItemCount()-1) ? typeCustom.getText() : (String)typeBox.getSelectedItem();
