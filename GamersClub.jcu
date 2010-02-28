@@ -30,22 +30,46 @@
 	</projects>
 	<open_files>
 		<docitem>
-			<path>..\..\..\..\Program Files\Xinox Software\JCreatorV4\start.zip</path>
-			<source>false</source>
-			<index>0</index>
-			<active>false</active>
-		</docitem>
-		<docitem>
 			<path>src\CopyGame.java</path>
 			<source>true</source>
-			<index>1</index>
+			<index>0</index>
 			<active>false</active>
 		</docitem>
 		<docitem>
 			<path>src\Globs.java</path>
 			<source>true</source>
+			<index>1</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>src\GamersClub.java</path>
+			<source>true</source>
 			<index>2</index>
 			<active>true</active>
+		</docitem>
+		<docitem>
+			<path>src\AddGame.java</path>
+			<source>true</source>
+			<index>3</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>src\MainMenu.java</path>
+			<source>true</source>
+			<index>4</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>src\PasteGame.java</path>
+			<source>true</source>
+			<index>5</index>
+			<active>false</active>
+		</docitem>
+		<docitem>
+			<path>src\Profile.java</path>
+			<source>true</source>
+			<index>6</index>
+			<active>false</active>
 		</docitem>
 	</open_files>
 	<build_files>
